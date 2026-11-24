@@ -1,0 +1,34 @@
+{
+  "name": "onboarding_abandoned",
+  "description": "A person explicitly left an onboarding flow without completing it. Only for abandonment the product can actually observe.",
+  "trigger": "The person takes an action that ends the flow — dismissing it, choosing “skip for now”, or navigating away from a flow that cannot be resumed.",
+  "nonTriggers": [
+    "Do not fire because the person stopped emitting events. Absence of activity is not abandonment, and inferring it here makes the drop-off number unfalsifiable.",
+    "Do not fire on a session or tab closing; the person may resume the flow later.",
+    "Do not fire on a flow the product has never presented."
+  ],
+  "properties": [
+    {
+      "name": "flow_id",
+      "type": "string",
+      "required": true,
+      "description": "Stable identifier of the onboarding flow, e.g. initial_setup. A flow, not a flow run.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "maxLength": 64,
+      "personContext": false
+    },
+    {
+      "name": "last_step_id",
+      "type": "string",
+      "required": false,
+      "description": "The last step completed before abandonment, if any. Absent means none.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "maxLength": 64,
+      "personContext": false
+    }
+  ]
+}

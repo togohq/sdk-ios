@@ -1,0 +1,61 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "direct_purchase",
+  "description": "F1 on a laptop, then signs in on a phone a day later and buys without a trial. Two devices, one person.",
+  "steps": [
+    {
+      "include": "acquisition"
+    },
+    {
+      "track": "signed_in",
+      "properties": {
+        "method": "email"
+      },
+      "at": "+1d",
+      "device": "phone"
+    },
+    {
+      "identify": "{{userId}}",
+      "device": "phone"
+    },
+    {
+      "track": "paywall_viewed",
+      "properties": {
+        "placement": "feature_gate",
+        "offer_id": "none"
+      },
+      "at": "+2m",
+      "device": "phone"
+    },
+    {
+      "track": "plan_selected",
+      "properties": {
+        "plan_id": "basic",
+        "billing_period": "monthly"
+      },
+      "at": "+20s",
+      "device": "phone"
+    },
+    {
+      "track": "checkout_started",
+      "properties": {
+        "plan_id": "basic",
+        "billing_period": "monthly"
+      },
+      "at": "+10s",
+      "device": "phone"
+    },
+    {
+      "track": "subscription_started",
+      "properties": {
+        "plan_id": "basic",
+        "billing_period": "monthly",
+        "amount_minor": 999,
+        "currency": "USD",
+        "is_trial_conversion": false
+      },
+      "at": "+1m",
+      "actor": "server"
+    }
+  ]
+}

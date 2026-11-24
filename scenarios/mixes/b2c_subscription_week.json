@@ -1,0 +1,48 @@
+{
+  "$schema": "../mix.schema.json",
+  "name": "b2c_subscription_week",
+  "description": "A week of a B2C subscription product: 1,000 visitors, mostly bouncing, a few converting.",
+  "seed": 20261020,
+  "scenarios": [
+    {
+      "scenario": "bounce",
+      "weight": 599
+    },
+    {
+      "scenario": "browse_no_signup",
+      "weight": 200
+    },
+    {
+      "scenario": "signup_no_onboarding",
+      "weight": 40
+    },
+    {
+      "scenario": "onboarding_abandoned",
+      "weight": 40
+    },
+    {
+      "scenario": "paywall_dismissed",
+      "weight": 50
+    },
+    {
+      "scenario": "trial_expires",
+      "weight": 30
+    },
+    {
+      "scenario": "trial_converts",
+      "weight": 25
+    },
+    {
+      "scenario": "direct_purchase",
+      "weight": 10
+    },
+    {
+      "scenario": "payment_failed_recovered",
+      "weight": 3
+    },
+    {
+      "scenario": "subscriber_cancels",
+      "weight": 3
+    }
+  ]
+}

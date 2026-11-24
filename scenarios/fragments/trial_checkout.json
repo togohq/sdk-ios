@@ -1,0 +1,40 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "trial_checkout",
+  "description": "F3 into a trial: the paywall at the end of onboarding, a plan, checkout, the provider confirming the trial.",
+  "steps": [
+    {
+      "track": "paywall_viewed",
+      "properties": {
+        "placement": "onboarding_end",
+        "offer_id": "trial_5d"
+      },
+      "at": "+5s"
+    },
+    {
+      "track": "plan_selected",
+      "properties": {
+        "plan_id": "premium",
+        "billing_period": "annual"
+      },
+      "at": "+30s"
+    },
+    {
+      "track": "checkout_started",
+      "properties": {
+        "plan_id": "premium",
+        "billing_period": "annual"
+      },
+      "at": "+10s"
+    },
+    {
+      "track": "trial_started",
+      "properties": {
+        "plan_id": "premium",
+        "trial_days": 5
+      },
+      "at": "+1m",
+      "actor": "server"
+    }
+  ]
+}

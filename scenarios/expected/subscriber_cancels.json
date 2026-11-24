@@ -1,0 +1,44 @@
+{
+  "scenario": "subscriber_cancels",
+  "now": "2026-10-21T12:00:00.000Z",
+  "seed": 1,
+  "batches": [
+    {
+      "client": "subscriber_cancels#1:server",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "events": [
+          {
+            "eventName": "subscription_cancelled",
+            "clientEventTs": "2026-10-15T06:43:21.269Z",
+            "eventId": "<eventId:1>",
+            "userId": "u_golden_1",
+            "properties": {
+              "plan_id": "premium",
+              "cancel_reason": "too_expensive",
+              "at_period_end": true
+            },
+            "sdk": {
+              "name": "sdk-node",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "subscription_reactivated",
+            "clientEventTs": "2026-10-17T06:43:21.269Z",
+            "eventId": "<eventId:2>",
+            "userId": "u_golden_1",
+            "properties": {
+              "plan_id": "premium"
+            },
+            "sdk": {
+              "name": "sdk-node",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

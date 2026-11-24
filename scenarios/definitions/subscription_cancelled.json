@@ -1,0 +1,40 @@
+{
+  "name": "subscription_cancelled",
+  "description": "A subscriber cancelled.",
+  "trigger": "The provider confirms the cancellation. Sent from the server.",
+  "nonTriggers": ["Not when a trial lapses without converting; that is trial_expired."],
+  "properties": [
+    {
+      "name": "plan_id",
+      "type": "enum",
+      "required": true,
+      "description": "The plan, as the payment provider knows it.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["basic", "premium"],
+      "personContext": false
+    },
+    {
+      "name": "cancel_reason",
+      "type": "enum",
+      "required": true,
+      "description": "The reason chosen in the cancellation flow.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["too_expensive", "not_using", "missing_feature", "other"],
+      "personContext": false
+    },
+    {
+      "name": "at_period_end",
+      "type": "boolean",
+      "required": true,
+      "description": "Whether access continues until the paid period ends.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "personContext": false
+    }
+  ]
+}

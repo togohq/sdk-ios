@@ -1,0 +1,24 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "trial_expires",
+  "description": "F1 to F3 into a trial, never uses the product, and the trial lapses. Server events in a client funnel.",
+  "steps": [
+    {
+      "include": "acquisition"
+    },
+    {
+      "include": "onboarding_happy_path"
+    },
+    {
+      "include": "trial_checkout"
+    },
+    {
+      "track": "trial_expired",
+      "properties": {
+        "plan_id": "premium"
+      },
+      "at": "+5d",
+      "actor": "server"
+    }
+  ]
+}

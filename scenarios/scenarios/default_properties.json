@@ -1,0 +1,43 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "default_properties",
+  "description": "init() with defaultProperties: stamped on every track() event by the browser and the server sender, never on $identify; one event overrides a default and wins.",
+  "init": {
+    "defaultProperties": {
+      "source": "web_app",
+      "environment": "prod"
+    }
+  },
+  "steps": [
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "landing"
+      }
+    },
+    {
+      "identify": "{{userId}}",
+      "at": "+1m"
+    },
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "pricing",
+        "source": "onboarding"
+      },
+      "at": "+30s"
+    },
+    {
+      "track": "subscription_started",
+      "properties": {
+        "plan_id": "basic",
+        "billing_period": "monthly",
+        "amount_minor": 999,
+        "currency": "USD",
+        "is_trial_conversion": false
+      },
+      "at": "+2m",
+      "actor": "server"
+    }
+  ]
+}

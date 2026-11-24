@@ -1,0 +1,109 @@
+{
+  "scenario": "property_names",
+  "now": "2026-10-21T12:00:00.000Z",
+  "seed": 1,
+  "batches": [
+    {
+      "client": "property_names#1:browser",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "deviceIdMode": "cookie",
+        "sessionIdMode": "sdk",
+        "events": [
+          {
+            "eventName": "$session_started",
+            "clientEventTs": "2026-10-15T09:42:27.843Z",
+            "eventId": "<eventId:1>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {},
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "plan_selected",
+            "clientEventTs": "2026-10-15T09:42:27.843Z",
+            "eventId": "<eventId:2>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {
+              "plan_id": "premium",
+              "billing_period": "annual",
+              "Plan Type": "client_plan_type"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "plan_selected",
+            "clientEventTs": "2026-10-15T09:45:27.843Z",
+            "eventId": "<eventId:3>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {
+              "plan_id": "basic",
+              "billing_period": "monthly",
+              "plan type": "lower_plan_type",
+              "planType": "camel_plan_type",
+              "Playn Type": "typo_plan_type"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "client": "property_names#1:server",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "events": [
+          {
+            "eventName": "subscription_started",
+            "clientEventTs": "2026-10-15T09:44:27.843Z",
+            "eventId": "<eventId:4>",
+            "userId": "u_golden_1",
+            "properties": {
+              "plan_id": "premium",
+              "billing_period": "annual",
+              "amount_minor": 5999,
+              "currency": "USD",
+              "is_trial_conversion": false,
+              "Plan Type": "server_plan_type"
+            },
+            "sdk": {
+              "name": "sdk-node",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

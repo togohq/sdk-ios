@@ -1,0 +1,33 @@
+{
+  "name": "onboarding_completed",
+  "description": "A person finished an onboarding flow. The activation metric, and the event most likely to be instrumented wrongly.",
+  "trigger": "Every required step of the flow has been completed and the product considers the person onboarded. Once per person per flow.",
+  "nonTriggers": [
+    "Do not fire because a success or welcome page rendered. A page render is not a completed flow, and this substitution turns activation into a page-view metric.",
+    "Do not fire when the person reaches the last step without finishing it.",
+    "Do not fire a second time for a person who repeats the flow; completion is once per person per flow."
+  ],
+  "properties": [
+    {
+      "name": "flow_id",
+      "type": "string",
+      "required": true,
+      "description": "Stable identifier of the onboarding flow, e.g. initial_setup. A flow, not a flow run.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "maxLength": 64,
+      "personContext": false
+    },
+    {
+      "name": "duration_ms",
+      "type": "integer",
+      "required": false,
+      "description": "Milliseconds from onboarding_started to completion for this person and flow.",
+      "semanticRole": "measure",
+      "cardinality": "high",
+      "queryability": "explicit_only",
+      "personContext": false
+    }
+  ]
+}

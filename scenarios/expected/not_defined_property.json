@@ -1,0 +1,34 @@
+{
+  "scenario": "not_defined_property",
+  "now": "2026-10-21T12:00:00.000Z",
+  "seed": 1,
+  "batches": [
+    {
+      "client": "not_defined_property#1:server",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "events": [
+          {
+            "eventName": "subscription_started",
+            "clientEventTs": "2026-10-15T09:42:39.049Z",
+            "eventId": "<eventId:1>",
+            "userId": "u_golden_1",
+            "properties": {
+              "plan_id": "premium",
+              "billing_period": "annual",
+              "amount_minor": 5999,
+              "currency": "USD",
+              "is_trial_conversion": false,
+              "coupon_code": "welcome10"
+            },
+            "sdk": {
+              "name": "sdk-node",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

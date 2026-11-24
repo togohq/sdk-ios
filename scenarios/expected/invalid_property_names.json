@@ -1,0 +1,87 @@
+{
+  "scenario": "invalid_property_names",
+  "now": "2026-10-21T12:00:00.000Z",
+  "seed": 1,
+  "batches": [
+    {
+      "client": "invalid_property_names#1:browser",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "deviceIdMode": "cookie",
+        "sessionIdMode": "sdk",
+        "events": [
+          {
+            "eventName": "$session_started",
+            "clientEventTs": "2026-10-15T09:42:31.578Z",
+            "eventId": "<eventId:1>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {},
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "plan_selected",
+            "clientEventTs": "2026-10-15T09:42:31.578Z",
+            "eventId": "<eventId:2>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {
+              "plan_id": "premium",
+              "billing_period": "annual",
+              "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp": "too_long",
+              "Plan\tType": "control_character",
+              "owner ada@example.com": "contains_email"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "client": "invalid_property_names#1:server",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "events": [
+          {
+            "eventName": "subscription_started",
+            "clientEventTs": "2026-10-15T09:44:31.578Z",
+            "eventId": "<eventId:3>",
+            "userId": "u_golden_1",
+            "properties": {
+              "plan_id": "premium",
+              "billing_period": "annual",
+              "amount_minor": 5999,
+              "currency": "USD",
+              "is_trial_conversion": false,
+              "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp": "too_long"
+            },
+            "sdk": {
+              "name": "sdk-node",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

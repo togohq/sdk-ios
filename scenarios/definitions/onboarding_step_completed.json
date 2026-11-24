@@ -1,0 +1,54 @@
+{
+  "name": "onboarding_step_completed",
+  "description": "A person finished one step of an onboarding flow. Drives step conversion, drop-off localization, and latency by step.",
+  "trigger": "The step’s success condition is met — the form validated, the resource was created, the permission was granted.",
+  "nonTriggers": [
+    "Do not fire when the step is merely displayed; display is not completion.",
+    "Do not fire when the person skips the step — a skipped step is not a completed one, and conflating them inflates conversion.",
+    "Do not fire again on a step the person revisits and re-submits without changing anything."
+  ],
+  "properties": [
+    {
+      "name": "flow_id",
+      "type": "string",
+      "required": true,
+      "description": "Stable identifier of the onboarding flow, e.g. initial_setup. A flow, not a flow run.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "maxLength": 64,
+      "personContext": false
+    },
+    {
+      "name": "step_id",
+      "type": "string",
+      "required": true,
+      "description": "Stable identifier of the step, e.g. invite_team. Never a display label.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "maxLength": 64,
+      "personContext": false
+    },
+    {
+      "name": "step_number",
+      "type": "integer",
+      "required": true,
+      "description": "Position of the step within the flow, starting at 1. Ordering the funnel by step_id alone is not possible.",
+      "semanticRole": "measure",
+      "cardinality": "low",
+      "queryability": "auto",
+      "personContext": false
+    },
+    {
+      "name": "duration_ms",
+      "type": "integer",
+      "required": false,
+      "description": "Milliseconds from the step being presented to it completing.",
+      "semanticRole": "measure",
+      "cardinality": "high",
+      "queryability": "explicit_only",
+      "personContext": false
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "batches": [
+    {
+      "body": {
+        "app": {
+          "build": "140",
+          "version": "1.4.0"
+        },
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "device": {
+          "deviceType": "mobile",
+          "model": "iPhone16,1",
+          "os": "iOS",
+          "osVersion": "18.1"
+        },
+        "deviceIdMode": "idfv",
+        "envelopeVersion": 2,
+        "events": [
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-18T17:11:29.454Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:1>",
+            "eventName": "$app_installed",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-18T17:11:30.454Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:2>",
+            "eventName": "$session_started",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:1>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-18T17:11:30.454Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:3>",
+            "eventName": "$app_opened",
+            "properties": {
+              "from_background": false
+            },
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:1>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-18T17:11:49.333Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:4>",
+            "eventName": "screen_viewed",
+            "properties": {
+              "screen": "home"
+            },
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:1>",
+            "timezone": "America/New_York"
+          }
+        ],
+        "sessionIdMode": "sdk"
+      },
+      "client": "app_installed_then_opened#1:app"
+    }
+  ],
+  "now": "2026-10-21T12:00:00.000Z",
+  "scenario": "app_installed_then_opened",
+  "seed": 1
+}

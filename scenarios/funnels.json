@@ -1,0 +1,125 @@
+{
+  "funnels": [
+    {
+      "id": "F1",
+      "name": "Acquisition \u2192 sign-up",
+      "steps": [
+        {
+          "event": "page_viewed",
+          "where": {
+            "page_type": "landing"
+          }
+        },
+        {
+          "event": "page_viewed",
+          "where": {
+            "page_type": "pricing"
+          }
+        },
+        {
+          "event": "account_created"
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "name": "Activation (onboarding)",
+      "steps": [
+        {
+          "event": "onboarding_started"
+        },
+        {
+          "event": "onboarding_step_completed",
+          "where": {
+            "step_number": 1
+          }
+        },
+        {
+          "event": "onboarding_step_completed",
+          "where": {
+            "step_number": 2
+          }
+        },
+        {
+          "event": "onboarding_step_completed",
+          "where": {
+            "step_number": 3
+          }
+        },
+        {
+          "event": "onboarding_completed"
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "name": "Paywall \u2192 checkout",
+      "steps": [
+        {
+          "event": "paywall_viewed"
+        },
+        {
+          "event": "plan_selected"
+        },
+        {
+          "event": "checkout_started"
+        },
+        {
+          "anyOf": [
+            {
+              "event": "trial_started"
+            },
+            {
+              "event": "subscription_started"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F4",
+      "name": "Trial \u2192 paid",
+      "steps": [
+        {
+          "event": "trial_started"
+        },
+        {
+          "event": "core_action_completed"
+        },
+        {
+          "event": "subscription_started",
+          "where": {
+            "is_trial_conversion": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "F5",
+      "name": "Renewal and recovery",
+      "steps": [
+        {
+          "event": "payment_failed"
+        },
+        {
+          "event": "subscription_renewed"
+        }
+      ]
+    },
+    {
+      "id": "F6",
+      "name": "Voluntary churn",
+      "steps": [
+        {
+          "event": "subscription_cancelled",
+          "where": {
+            "at_period_end": true
+          }
+        },
+        {
+          "event": "subscription_reactivated"
+        }
+      ]
+    }
+  ]
+}

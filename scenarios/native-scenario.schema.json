@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://togohq.ai/schemas/sdk-native-scenario/v1.json",
+  "title": "SDK native scenario (v1)",
+  "description": "One app's life on one device, as the calls it makes to the SDK and the lifecycle the OS gives it — never envelopes. Only a native SDK can perform it; see README.md → Native scenarios.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "steps"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "The file's name."
+    },
+    "description": {
+      "type": "string"
+    },
+    "init": {
+      "$ref": "scenario.schema.json#/properties/init"
+    },
+    "deviceClockOffsetMs": {
+      "type": "integer",
+      "description": "How far the device's clock is off true time. Negative: behind."
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The first step is a launch.",
+      "items": {
+        "type": "object",
+        "description": "Exactly one verb, plus properties (with track) and at.",
+        "additionalProperties": false,
+        "properties": {
+          "launch": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["appVersion", "appBuild"],
+            "description": "A new process: the app was not running, or the last process was killed with no callback. The SDK is set up again over what the last one stored, reporting this build.",
+            "properties": {
+              "appVersion": {
+                "type": "string",
+                "minLength": 1
+              },
+              "appBuild": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "foreground": {
+            "type": "string",
+            "minLength": 1,
+            "description": "This scene comes to the foreground. Scenes are counted: only the first one in front is an open."
+          },
+          "background": {
+            "type": "string",
+            "minLength": 1,
+            "description": "This scene leaves the foreground. Only the last one leaving is the move to the background."
+          },
+          "track": {
+            "$ref": "scenario.schema.json#/properties/steps/items/properties/track"
+          },
+          "properties": {
+            "$ref": "scenario.schema.json#/properties/steps/items/properties/properties"
+          },
+          "identify": {
+            "$ref": "scenario.schema.json#/properties/steps/items/properties/identify"
+          },
+          "setPersonProperties": {
+            "$ref": "scenario.schema.json#/properties/steps/items/properties/setPersonProperties"
+          },
+          "setConsent": {
+            "$ref": "scenario.schema.json#/properties/steps/items/properties/setConsent"
+          },
+          "reset": {
+            "const": true
+          },
+          "flush": {
+            "const": true
+          },
+          "at": {
+            "type": "string",
+            "pattern": "^\\+(\\d+(ms|s|m|h|d))+$",
+            "description": "+<duration> after the previous step. Omitted: 2–20 s, seeded."
+          }
+        },
+        "oneOf": [
+          { "required": ["launch"] },
+          { "required": ["foreground"] },
+          { "required": ["background"] },
+          { "required": ["track"] },
+          { "required": ["identify"] },
+          { "required": ["setPersonProperties"] },
+          { "required": ["setConsent"] },
+          { "required": ["reset"] },
+          { "required": ["flush"] }
+        ]
+      }
+    }
+  }
+}

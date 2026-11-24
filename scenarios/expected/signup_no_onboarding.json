@@ -1,0 +1,130 @@
+{
+  "scenario": "signup_no_onboarding",
+  "now": "2026-10-21T12:00:00.000Z",
+  "seed": 1,
+  "batches": [
+    {
+      "client": "signup_no_onboarding#1:browser",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "deviceIdMode": "cookie",
+        "sessionIdMode": "sdk",
+        "events": [
+          {
+            "eventName": "$session_started",
+            "clientEventTs": "2026-10-17T23:21:57.376Z",
+            "eventId": "<eventId:1>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {},
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "page_viewed",
+            "clientEventTs": "2026-10-17T23:21:57.376Z",
+            "eventId": "<eventId:2>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {
+              "page_type": "landing"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "page_viewed",
+            "clientEventTs": "2026-10-17T23:22:37.376Z",
+            "eventId": "<eventId:3>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {
+              "page_type": "pricing"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "account_created",
+            "clientEventTs": "2026-10-17T23:24:37.376Z",
+            "eventId": "<eventId:4>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {
+              "method": "email"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "$identify",
+            "clientEventTs": "2026-10-17T23:24:56.255Z",
+            "eventId": "<eventId:5>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "userId": "u_golden_1",
+            "sessionId": "<sessionId:1>",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "$set_person_properties",
+            "clientEventTs": "2026-10-17T23:25:05.960Z",
+            "eventId": "<eventId:6>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "userId": "u_golden_1",
+            "sessionId": "<sessionId:1>",
+            "properties": {},
+            "personProperties": {
+              "set": {
+                "$email": "u_golden_1@example.com",
+                "$name": "Fixture 1"
+              }
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

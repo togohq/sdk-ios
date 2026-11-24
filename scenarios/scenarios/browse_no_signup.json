@@ -1,0 +1,27 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "browse_no_signup",
+  "description": "Landing, pricing, then features a day later: two sessions, cut by the 30-minute idle timeout.",
+  "steps": [
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "landing"
+      }
+    },
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "pricing"
+      },
+      "at": "+1m"
+    },
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "features"
+      },
+      "at": "+1d"
+    }
+  ]
+}

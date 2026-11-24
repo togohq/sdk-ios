@@ -1,0 +1,19 @@
+{
+  "name": "trial_expired",
+  "description": "A trial ended without converting.",
+  "trigger": "The provider reports the trial period over with no successful charge. Sent from the server.",
+  "nonTriggers": ["Not when the trial converts."],
+  "properties": [
+    {
+      "name": "plan_id",
+      "type": "enum",
+      "required": true,
+      "description": "The plan, as the payment provider knows it.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["basic", "premium"],
+      "personContext": false
+    }
+  ]
+}

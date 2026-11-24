@@ -1,0 +1,61 @@
+{
+  "name": "subscription_started",
+  "description": "The first paid charge of a subscription succeeded.",
+  "trigger": "The provider webhook confirms the first successful charge. Sent from the server.",
+  "nonTriggers": ["Not on a trial starting \u2014 a trial is not a subscription."],
+  "properties": [
+    {
+      "name": "plan_id",
+      "type": "enum",
+      "required": true,
+      "description": "The plan, as the payment provider knows it.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["basic", "premium"],
+      "personContext": false
+    },
+    {
+      "name": "billing_period",
+      "type": "enum",
+      "required": true,
+      "description": "How often the plan is charged.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["monthly", "annual"],
+      "personContext": false
+    },
+    {
+      "name": "amount_minor",
+      "type": "integer",
+      "required": true,
+      "description": "The charge in the currency's minor unit (cents). An integer, never a float.",
+      "semanticRole": "measure",
+      "cardinality": "medium",
+      "queryability": "explicit_only",
+      "personContext": false
+    },
+    {
+      "name": "currency",
+      "type": "enum",
+      "required": true,
+      "description": "ISO 4217 code of amount_minor.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["USD", "EUR", "GBP"],
+      "personContext": false
+    },
+    {
+      "name": "is_trial_conversion",
+      "type": "boolean",
+      "required": true,
+      "description": "Whether a trial converted into this subscription.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "personContext": false
+    }
+  ]
+}

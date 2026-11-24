@@ -1,0 +1,150 @@
+{
+  "$comment": "Every SDK's property cap is checked against these key sets: the keys are pad.count names `prefix` + the index zero-padded to `width`, then `keys`, in that insertion order. Past 256, every name in `platform` is kept first — the keys an SDK writes itself — and then the rest in ascending UTF-16 code-unit order until 256 are kept; droppedCount is how many are dropped and droppedFirst the first ten of them, in that order.",
+  "max": 256,
+  "platform": ["$email", "$name"],
+  "cases": [
+    {
+      "name": "integer-like keys and a $ key sort as strings, before letters",
+      "pad": {
+        "prefix": "z",
+        "count": 254,
+        "width": 4
+      },
+      "keys": ["9", "10", "$os"],
+      "droppedCount": 1,
+      "droppedFirst": ["z0253"]
+    },
+    {
+      "name": "a character outside the Basic Multilingual Plane sorts by its UTF-16 code units, before a full-width letter",
+      "pad": {
+        "prefix": "a",
+        "count": 255,
+        "width": 4
+      },
+      "keys": ["ｚ", "𝒜"],
+      "droppedCount": 1,
+      "droppedFirst": ["ｚ"]
+    },
+    {
+      "name": "case-sensitive: an upper-case letter sorts before every lower-case one",
+      "pad": {
+        "prefix": "b",
+        "count": 255,
+        "width": 4
+      },
+      "keys": ["B", "a"],
+      "droppedCount": 1,
+      "droppedFirst": ["b0254"]
+    },
+    {
+      "name": "exactly 256 keys are kept whole",
+      "pad": {
+        "prefix": "p",
+        "count": 256,
+        "width": 3
+      },
+      "keys": [],
+      "droppedCount": 0,
+      "droppedFirst": []
+    },
+    {
+      "name": "257 keys drop the last in sort order, wherever it was inserted",
+      "pad": {
+        "prefix": "p",
+        "count": 256,
+        "width": 3
+      },
+      "keys": ["a_first_inserted_last"],
+      "droppedCount": 1,
+      "droppedFirst": ["p255"]
+    },
+    {
+      "name": "ten thousand keys keep 256 and name ten",
+      "pad": {
+        "prefix": "p",
+        "count": 10000,
+        "width": 5
+      },
+      "keys": [],
+      "droppedCount": 9744,
+      "droppedFirst": [
+        "p00256",
+        "p00257",
+        "p00258",
+        "p00259",
+        "p00260",
+        "p00261",
+        "p00262",
+        "p00263",
+        "p00264",
+        "p00265"
+      ]
+    },
+    {
+      "name": "the platform's $email and $name are kept though 300 names sort before them",
+      "pad": {
+        "prefix": "#",
+        "count": 300,
+        "width": 4
+      },
+      "keys": ["$email", "$name"],
+      "droppedCount": 46,
+      "droppedFirst": [
+        "#0254",
+        "#0255",
+        "#0256",
+        "#0257",
+        "#0258",
+        "#0259",
+        "#0260",
+        "#0261",
+        "#0262",
+        "#0263"
+      ]
+    },
+    {
+      "name": "the platform's $email and $name are kept though 300 other $ names sort before them",
+      "pad": {
+        "prefix": "$a",
+        "count": 300,
+        "width": 4
+      },
+      "keys": ["$name", "$email"],
+      "droppedCount": 46,
+      "droppedFirst": [
+        "$a0254",
+        "$a0255",
+        "$a0256",
+        "$a0257",
+        "$a0258",
+        "$a0259",
+        "$a0260",
+        "$a0261",
+        "$a0262",
+        "$a0263"
+      ]
+    },
+    {
+      "name": "a repeated name counts once, so 256 distinct names with repeats are kept whole",
+      "pad": {
+        "prefix": "p",
+        "count": 256,
+        "width": 3
+      },
+      "keys": ["p000", "p001", "p002"],
+      "droppedCount": 0,
+      "droppedFirst": []
+    },
+    {
+      "name": "257 distinct names among repeats drop one",
+      "pad": {
+        "prefix": "p",
+        "count": 257,
+        "width": 3
+      },
+      "keys": ["p000", "p256"],
+      "droppedCount": 1,
+      "droppedFirst": ["p256"]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "event_names",
+  "description": "Two names a customer sends for one action: Sign Up and Sign up are two events, kept exactly as sent; the registry marks the second as looking like the first, and a person may merge them.",
+  "steps": [
+    {
+      "track": "Sign Up",
+      "properties": {
+        "method": "email"
+      }
+    },
+    {
+      "track": "Sign up",
+      "properties": {
+        "method": "email"
+      },
+      "at": "+1m"
+    }
+  ]
+}

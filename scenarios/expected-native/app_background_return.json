@@ -1,0 +1,219 @@
+{
+  "batches": [
+    {
+      "body": {
+        "app": {
+          "build": "200",
+          "version": "2.0.0"
+        },
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "device": {
+          "deviceType": "mobile",
+          "model": "iPhone16,1",
+          "os": "iOS",
+          "osVersion": "18.1"
+        },
+        "deviceIdMode": "idfv",
+        "envelopeVersion": 2,
+        "events": [
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T19:54:55.119Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:1>",
+            "eventName": "$app_installed",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T19:54:56.119Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:2>",
+            "eventName": "$session_started",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:1>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T19:54:56.119Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:3>",
+            "eventName": "$app_opened",
+            "properties": {
+              "from_background": false
+            },
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:1>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T22:05:56.119Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:4>",
+            "eventName": "$session_started",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:2>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T22:05:56.119Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:5>",
+            "eventName": "$app_opened",
+            "properties": {
+              "from_background": false
+            },
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:2>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T22:06:14.998Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:6>",
+            "eventName": "screen_viewed",
+            "properties": {
+              "screen": "home"
+            },
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:2>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T22:41:14.998Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:7>",
+            "eventName": "$app_opened",
+            "properties": {
+              "from_background": true
+            },
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:2>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T22:42:24.703Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:8>",
+            "eventName": "screen_viewed",
+            "properties": {
+              "screen": "compose"
+            },
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:2>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T23:24:24.703Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:9>",
+            "eventName": "$session_started",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:3>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T23:24:24.703Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:10>",
+            "eventName": "$app_opened",
+            "properties": {
+              "from_background": true
+            },
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:3>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-17T23:30:24.703Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:11>",
+            "eventName": "push_received",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "sessionId": "<sessionId:3>",
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-18T00:30:24.703Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:12>",
+            "eventName": "push_received",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "timezone": "America/New_York"
+          },
+          {
+            "anonymousId": "<anonymousId:1>",
+            "clientEventTs": "2026-10-18T03:30:25.703Z",
+            "deviceId": "<deviceId:1>",
+            "eventId": "<eventId:13>",
+            "eventName": "push_received",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-ios",
+              "version": "<sdk.version>"
+            },
+            "timezone": "America/New_York"
+          }
+        ],
+        "sessionIdMode": "sdk"
+      },
+      "client": "app_background_return#1:app"
+    }
+  ],
+  "now": "2026-10-21T12:00:00.000Z",
+  "scenario": "app_background_return",
+  "seed": 1
+}

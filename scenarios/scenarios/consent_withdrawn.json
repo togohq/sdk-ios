@@ -1,0 +1,49 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "consent_withdrawn",
+  "description": "Pending consent buffers two page views, a grant releases them, they upload, and a later denial drops everything after it.",
+  "init": {
+    "consent": "pending"
+  },
+  "steps": [
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "landing"
+      }
+    },
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "pricing"
+      },
+      "at": "+30s"
+    },
+    {
+      "setConsent": "granted",
+      "at": "+10s"
+    },
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "features"
+      },
+      "at": "+1m"
+    },
+    {
+      "flush": true,
+      "at": "+5s"
+    },
+    {
+      "setConsent": "denied",
+      "at": "+2m"
+    },
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "blog"
+      },
+      "at": "+1m"
+    }
+  ]
+}

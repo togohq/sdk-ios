@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://togohq.ai/schemas/sdk-scenario/v1.json",
+  "title": "SDK scenario (v1)",
+  "description": "One person's journey as calls an app makes to the SDK \u2014 never envelopes. Also the shape of a fragment, which is a scenario with only name, description and steps.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "steps"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "The file's name."
+    },
+    "description": {
+      "type": "string"
+    },
+    "init": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "init() options a scenario may set; transport options are the runner's.",
+      "properties": {
+        "consent": {
+          "enum": ["not_required", "pending", "granted", "denied"]
+        },
+        "onDenied": {
+          "type": "string"
+        },
+        "sessionTimeoutSeconds": {
+          "type": "integer"
+        },
+        "defaultProperties": {
+          "type": "object",
+          "description": "Stamped on every track() event, by the browser and the server sender alike.",
+          "additionalProperties": {
+            "type": ["string", "number", "boolean", "null"]
+          }
+        }
+      }
+    },
+    "deviceClockOffsetMs": {
+      "type": "integer",
+      "description": "How far the browser devices' clocks are off true time. Negative: behind."
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "description": "Exactly one verb (track, identify, setPersonProperties, setConsent, reset, flush, include), plus the runner-only keys at, actor, device and expectRejected.",
+        "additionalProperties": false,
+        "properties": {
+          "track": {
+            "type": "string",
+            "minLength": 1,
+            "description": "track(name, properties). A raw name: stored as sent."
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": ["string", "number", "boolean", "null"]
+            }
+          },
+          "identify": {
+            "type": "string",
+            "minLength": 1,
+            "description": "identify(userId). Usually \"{{userId}}\"."
+          },
+          "setPersonProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "setPersonProperties(update). email and name are the typed reserved person properties, written as $email and $name; set, setOnce and unset are the project's own keys, never email, name or a $ key.",
+            "properties": {
+              "email": {
+                "type": ["string", "null"]
+              },
+              "name": {
+                "type": ["string", "null"]
+              },
+              "set": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": ["string", "number", "boolean", "null"]
+                }
+              },
+              "setOnce": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": ["string", "number", "boolean", "null"]
+                }
+              },
+              "unset": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "setConsent": {
+            "enum": ["not_required", "pending", "granted", "denied"]
+          },
+          "reset": {
+            "const": true
+          },
+          "flush": {
+            "const": true,
+            "description": "Upload what this device holds so far, its clock reading now. The runner always flushes every device after the last step."
+          },
+          "include": {
+            "type": "string",
+            "description": "A fragment under fragments/, or another scenario, inlined."
+          },
+          "at": {
+            "type": "string",
+            "pattern": "^(\\+(\\d+(ms|s|m|h|d))+|now([+-](\\d+(ms|s|m|h|d))+)?)$",
+            "description": "+<duration> after the previous step; now\u00b1<duration> only with expectRejected. Omitted: 2\u201320 s, seeded."
+          },
+          "actor": {
+            "enum": ["client", "server"],
+            "description": "server: sent by the runner's backend client \u2014 no session, device id \"backend\"."
+          },
+          "device": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,31}$",
+            "description": "Which of the visitor's devices. Default \"browser\"; a new name is a fresh init()."
+          },
+          "expectRejected": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "description": "The RejectionCode the edge must return for this event."
+          }
+        },
+        "oneOf": [
+          {
+            "required": ["track"]
+          },
+          {
+            "required": ["identify"]
+          },
+          {
+            "required": ["setPersonProperties"]
+          },
+          {
+            "required": ["setConsent"]
+          },
+          {
+            "required": ["reset"]
+          },
+          {
+            "required": ["flush"]
+          },
+          {
+            "required": ["include"]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "invalid_property_names",
+  "description": "Property names the registry cannot hold: one over 255 characters, one with a tab, one holding an email address — from the browser and from the server. Every SDK reports each through onError; under the recording's test key each is sent unchanged, for verify_tracking to report property_name_invalid; under a live key each is dropped and the rest of the event lands.",
+  "steps": [
+    {
+      "track": "plan_selected",
+      "properties": {
+        "plan_id": "premium",
+        "billing_period": "annual",
+        "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp": "too_long",
+        "Plan\tType": "control_character",
+        "owner ada@example.com": "contains_email"
+      }
+    },
+    {
+      "track": "subscription_started",
+      "actor": "server",
+      "at": "+2m",
+      "properties": {
+        "plan_id": "premium",
+        "billing_period": "annual",
+        "amount_minor": 5999,
+        "currency": "USD",
+        "is_trial_conversion": false,
+        "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp": "too_long"
+      }
+    }
+  ]
+}

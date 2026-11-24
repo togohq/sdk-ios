@@ -1,0 +1,35 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "trial_converts",
+  "description": "Signs up, finishes onboarding, starts a trial, uses the product, converts. The five-day offline replay.",
+  "steps": [
+    {
+      "include": "acquisition"
+    },
+    {
+      "include": "onboarding_happy_path"
+    },
+    {
+      "include": "trial_checkout"
+    },
+    {
+      "track": "core_action_completed",
+      "properties": {
+        "action_id": "session_played"
+      },
+      "at": "+2d"
+    },
+    {
+      "track": "subscription_started",
+      "properties": {
+        "plan_id": "premium",
+        "billing_period": "annual",
+        "amount_minor": 5999,
+        "currency": "USD",
+        "is_trial_conversion": true
+      },
+      "at": "+3d",
+      "actor": "server"
+    }
+  ]
+}

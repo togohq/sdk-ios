@@ -1,0 +1,19 @@
+{
+  "name": "subscription_reactivated",
+  "description": "A cancelled subscription was resumed before it ended.",
+  "trigger": "The provider confirms the cancellation was reversed. Sent from the server.",
+  "nonTriggers": ["Not on a new subscription after the old one ended."],
+  "properties": [
+    {
+      "name": "plan_id",
+      "type": "enum",
+      "required": true,
+      "description": "The plan, as the payment provider knows it.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["basic", "premium"],
+      "personContext": false
+    }
+  ]
+}

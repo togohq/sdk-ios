@@ -1,0 +1,11 @@
+{
+  "$schema": "../native-scenario.schema.json",
+  "name": "app_installed_then_opened",
+  "description": "The first launch of a new install, opened by the user: $app_installed at the launch with no session, then the open starts the session. One screen, then the app goes to the background.",
+  "steps": [
+    { "launch": { "appVersion": "1.4.0", "appBuild": "140" } },
+    { "foreground": "main", "at": "+1s" },
+    { "track": "screen_viewed", "properties": { "screen": "home" } },
+    { "background": "main", "at": "+2m" }
+  ]
+}

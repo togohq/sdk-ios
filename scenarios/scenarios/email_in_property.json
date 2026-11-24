@@ -1,0 +1,22 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "email_in_property",
+  "description": "checkout_failed carrying an email address. Curation drops that property and counts it; the rest lands.",
+  "steps": [
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "pricing"
+      }
+    },
+    {
+      "track": "checkout_failed",
+      "properties": {
+        "plan_id": "basic",
+        "failure_reason": "card_declined",
+        "contact": "{{userId}}@example.com"
+      },
+      "at": "+1m"
+    }
+  ]
+}

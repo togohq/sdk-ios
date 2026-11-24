@@ -1,0 +1,38 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "payment_failed_recovered",
+  "description": "A subscriber from before the window: two failed renewal charges, then a renewal that succeeds.",
+  "steps": [
+    {
+      "track": "payment_failed",
+      "properties": {
+        "plan_id": "premium",
+        "failure_reason": "card_declined",
+        "attempt_number": 1
+      },
+      "actor": "server"
+    },
+    {
+      "track": "payment_failed",
+      "properties": {
+        "plan_id": "premium",
+        "failure_reason": "insufficient_funds",
+        "attempt_number": 2
+      },
+      "at": "+1d",
+      "actor": "server"
+    },
+    {
+      "track": "subscription_renewed",
+      "properties": {
+        "plan_id": "premium",
+        "billing_period": "monthly",
+        "amount_minor": 1299,
+        "currency": "USD",
+        "renewal_number": 4
+      },
+      "at": "+2d",
+      "actor": "server"
+    }
+  ]
+}

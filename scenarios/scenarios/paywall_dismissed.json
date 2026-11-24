@@ -1,0 +1,28 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "paywall_dismissed",
+  "description": "F1, F2, then the paywall shown and dismissed.",
+  "steps": [
+    {
+      "include": "acquisition"
+    },
+    {
+      "include": "onboarding_happy_path"
+    },
+    {
+      "track": "paywall_viewed",
+      "properties": {
+        "placement": "onboarding_end",
+        "offer_id": "trial_5d"
+      },
+      "at": "+5s"
+    },
+    {
+      "track": "paywall_dismissed",
+      "properties": {
+        "placement": "onboarding_end"
+      },
+      "at": "+20s"
+    }
+  ]
+}

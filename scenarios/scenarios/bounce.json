@@ -1,0 +1,13 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "bounce",
+  "description": "One landing page view and nothing else. An anonymous person never materialised in PostgreSQL.",
+  "steps": [
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "landing"
+      }
+    }
+  ]
+}

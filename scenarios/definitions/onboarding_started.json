@@ -1,0 +1,34 @@
+{
+  "name": "onboarding_started",
+  "description": "A person entered an onboarding flow. The funnel entry and the denominator for every adoption rate derived from onboarding.",
+  "trigger": "The first step of the flow is presented to the person, whether or not they interact with it. Once per person per flow.",
+  "nonTriggers": [
+    "Do not fire on sign-up or account creation — those are separate lifecycle events.",
+    "Do not fire again when the person resumes a flow they already started; resumption is not a new entry.",
+    "Do not fire when the flow is rendered but hidden, prefetched, or shown to an automated session."
+  ],
+  "properties": [
+    {
+      "name": "flow_id",
+      "type": "string",
+      "required": true,
+      "description": "Stable identifier of the onboarding flow, e.g. initial_setup. A flow, not a flow run.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "maxLength": 64,
+      "personContext": false
+    },
+    {
+      "name": "entry_point",
+      "type": "enum",
+      "required": false,
+      "description": "How the person reached onboarding.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["organic", "paywall_return"],
+      "personContext": false
+    }
+  ]
+}

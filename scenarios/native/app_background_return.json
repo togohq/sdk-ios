@@ -1,0 +1,25 @@
+{
+  "$schema": "../native-scenario.schema.json",
+  "name": "app_background_return",
+  "description": "An app opened once, then a later day. Launched two hours later with nobody looking, as a prewarm is (no open, no session); opened ten minutes after that; quiet in front for 20 minutes, then 15 in the background, which is 15 idle minutes and the same session; a second iPad window that comes and goes while the first stays in front (nothing); 40 minutes in the background, a new session; a push handled in the background inside the window joins the session and one outside it carries none; then killed while suspended and relaunched by a push, which opens nothing.",
+  "steps": [
+    { "launch": { "appVersion": "2.0.0", "appBuild": "200" } },
+    { "foreground": "main", "at": "+1s" },
+    { "background": "main", "at": "+1m" },
+    { "launch": { "appVersion": "2.0.0", "appBuild": "200" }, "at": "+2h" },
+    { "foreground": "main", "at": "+10m" },
+    { "track": "screen_viewed", "properties": { "screen": "home" } },
+    { "background": "main", "at": "+20m" },
+    { "foreground": "main", "at": "+15m" },
+    { "foreground": "side", "at": "+1m" },
+    { "track": "screen_viewed", "properties": { "screen": "compose" } },
+    { "background": "side", "at": "+1m" },
+    { "background": "main", "at": "+1m" },
+    { "foreground": "main", "at": "+40m" },
+    { "background": "main", "at": "+1m" },
+    { "track": "push_received", "at": "+5m" },
+    { "track": "push_received", "at": "+1h" },
+    { "launch": { "appVersion": "2.0.0", "appBuild": "200" }, "at": "+3h" },
+    { "track": "push_received", "at": "+1s" }
+  ]
+}

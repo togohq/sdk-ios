@@ -1,0 +1,40 @@
+{
+  "name": "payment_failed",
+  "description": "A renewal charge failed.",
+  "trigger": "The provider webhook reports a failed renewal charge. Sent from the server.",
+  "nonTriggers": ["Not on a checkout-time failure; that is checkout_failed."],
+  "properties": [
+    {
+      "name": "plan_id",
+      "type": "enum",
+      "required": true,
+      "description": "The plan, as the payment provider knows it.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["basic", "premium"],
+      "personContext": false
+    },
+    {
+      "name": "failure_reason",
+      "type": "enum",
+      "required": true,
+      "description": "Why the provider refused the charge.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["card_declined", "expired_card", "insufficient_funds"],
+      "personContext": false
+    },
+    {
+      "name": "attempt_number",
+      "type": "integer",
+      "required": true,
+      "description": "Which attempt at this charge, starting at 1.",
+      "semanticRole": "dimension",
+      "cardinality": "medium",
+      "queryability": "explicit_only",
+      "personContext": false
+    }
+  ]
+}

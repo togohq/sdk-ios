@@ -1,0 +1,39 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "property_names",
+  "description": "A property name sent as a customer spells it: Plan Type from the browser and from the server is one property; plan type, planType and Playn Type are three more, kept exactly as sent until a person merges them. Each value names its property, so a read shows which one it came from.",
+  "steps": [
+    {
+      "track": "plan_selected",
+      "properties": {
+        "plan_id": "premium",
+        "billing_period": "annual",
+        "Plan Type": "client_plan_type"
+      }
+    },
+    {
+      "track": "subscription_started",
+      "actor": "server",
+      "properties": {
+        "plan_id": "premium",
+        "billing_period": "annual",
+        "amount_minor": 5999,
+        "currency": "USD",
+        "is_trial_conversion": false,
+        "Plan Type": "server_plan_type"
+      },
+      "at": "+2m"
+    },
+    {
+      "track": "plan_selected",
+      "properties": {
+        "plan_id": "basic",
+        "billing_period": "monthly",
+        "plan type": "lower_plan_type",
+        "planType": "camel_plan_type",
+        "Playn Type": "typo_plan_type"
+      },
+      "at": "+1m"
+    }
+  ]
+}

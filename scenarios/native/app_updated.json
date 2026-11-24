@@ -1,0 +1,18 @@
+{
+  "$schema": "../native-scenario.schema.json",
+  "name": "app_updated",
+  "description": "A day after the install the app updates from 1.4.0 (140) to 1.5.0 (150): one $app_updated with the previous version and build, and the events before and after the update in batches of their own build. A later launch of the same build sends neither.",
+  "steps": [
+    { "launch": { "appVersion": "1.4.0", "appBuild": "140" } },
+    { "foreground": "main", "at": "+1s" },
+    { "track": "screen_viewed", "properties": { "screen": "home" } },
+    { "background": "main", "at": "+1m" },
+    { "launch": { "appVersion": "1.5.0", "appBuild": "150" }, "at": "+1d" },
+    { "foreground": "main", "at": "+1s" },
+    { "track": "screen_viewed", "properties": { "screen": "whats_new" } },
+    { "background": "main", "at": "+1m" },
+    { "launch": { "appVersion": "1.5.0", "appBuild": "150" }, "at": "+3h" },
+    { "foreground": "main", "at": "+1s" },
+    { "background": "main", "at": "+1m" }
+  ]
+}

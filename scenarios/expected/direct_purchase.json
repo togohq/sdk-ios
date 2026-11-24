@@ -1,0 +1,285 @@
+{
+  "scenario": "direct_purchase",
+  "now": "2026-10-21T12:00:00.000Z",
+  "seed": 1,
+  "batches": [
+    {
+      "client": "direct_purchase#1:browser",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "deviceIdMode": "cookie",
+        "sessionIdMode": "sdk",
+        "events": [
+          {
+            "eventName": "$session_started",
+            "clientEventTs": "2026-10-18T14:16:09.441Z",
+            "eventId": "<eventId:1>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {},
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "page_viewed",
+            "clientEventTs": "2026-10-18T14:16:09.441Z",
+            "eventId": "<eventId:2>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {
+              "page_type": "landing"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "page_viewed",
+            "clientEventTs": "2026-10-18T14:16:49.441Z",
+            "eventId": "<eventId:3>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {
+              "page_type": "pricing"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "account_created",
+            "clientEventTs": "2026-10-18T14:18:49.441Z",
+            "eventId": "<eventId:4>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "sessionId": "<sessionId:1>",
+            "properties": {
+              "method": "email"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "$identify",
+            "clientEventTs": "2026-10-18T14:19:08.320Z",
+            "eventId": "<eventId:5>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "userId": "u_golden_1",
+            "sessionId": "<sessionId:1>",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "$set_person_properties",
+            "clientEventTs": "2026-10-18T14:19:18.025Z",
+            "eventId": "<eventId:6>",
+            "anonymousId": "<anonymousId:1>",
+            "deviceId": "<deviceId:1>",
+            "userId": "u_golden_1",
+            "sessionId": "<sessionId:1>",
+            "properties": {},
+            "personProperties": {
+              "set": {
+                "$email": "u_golden_1@example.com",
+                "$name": "Fixture 1"
+              }
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "client": "direct_purchase#1:phone",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "deviceIdMode": "cookie",
+        "sessionIdMode": "sdk",
+        "events": [
+          {
+            "eventName": "$session_started",
+            "clientEventTs": "2026-10-19T14:19:18.025Z",
+            "eventId": "<eventId:7>",
+            "anonymousId": "<anonymousId:2>",
+            "deviceId": "<deviceId:2>",
+            "sessionId": "<sessionId:2>",
+            "properties": {},
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "signed_in",
+            "clientEventTs": "2026-10-19T14:19:18.025Z",
+            "eventId": "<eventId:8>",
+            "anonymousId": "<anonymousId:2>",
+            "deviceId": "<deviceId:2>",
+            "sessionId": "<sessionId:2>",
+            "properties": {
+              "method": "email"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "$identify",
+            "clientEventTs": "2026-10-19T14:19:29.786Z",
+            "eventId": "<eventId:9>",
+            "anonymousId": "<anonymousId:2>",
+            "deviceId": "<deviceId:2>",
+            "userId": "u_golden_1",
+            "sessionId": "<sessionId:2>",
+            "properties": {},
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "paywall_viewed",
+            "clientEventTs": "2026-10-19T14:21:29.786Z",
+            "eventId": "<eventId:10>",
+            "anonymousId": "<anonymousId:2>",
+            "deviceId": "<deviceId:2>",
+            "userId": "u_golden_1",
+            "sessionId": "<sessionId:2>",
+            "properties": {
+              "placement": "feature_gate",
+              "offer_id": "none"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "plan_selected",
+            "clientEventTs": "2026-10-19T14:21:49.786Z",
+            "eventId": "<eventId:11>",
+            "anonymousId": "<anonymousId:2>",
+            "deviceId": "<deviceId:2>",
+            "userId": "u_golden_1",
+            "sessionId": "<sessionId:2>",
+            "properties": {
+              "plan_id": "basic",
+              "billing_period": "monthly"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "checkout_started",
+            "clientEventTs": "2026-10-19T14:21:59.786Z",
+            "eventId": "<eventId:12>",
+            "anonymousId": "<anonymousId:2>",
+            "deviceId": "<deviceId:2>",
+            "userId": "u_golden_1",
+            "sessionId": "<sessionId:2>",
+            "properties": {
+              "plan_id": "basic",
+              "billing_period": "monthly"
+            },
+            "timezone": "America/New_York",
+            "page": {
+              "url": "https://app.lumen.example/",
+              "path": "/"
+            },
+            "sdk": {
+              "name": "sdk-browser",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "client": "direct_purchase#1:server",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "events": [
+          {
+            "eventName": "subscription_started",
+            "clientEventTs": "2026-10-19T14:22:59.786Z",
+            "eventId": "<eventId:13>",
+            "userId": "u_golden_1",
+            "properties": {
+              "plan_id": "basic",
+              "billing_period": "monthly",
+              "amount_minor": 999,
+              "currency": "USD",
+              "is_trial_conversion": false
+            },
+            "sdk": {
+              "name": "sdk-node",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

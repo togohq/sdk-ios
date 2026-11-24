@@ -1,0 +1,11 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "skewed_device",
+  "description": "trial_converts on a device whose clock is three hours behind. Same event_time per event after correction; clock_skew_ms near +3 h.",
+  "deviceClockOffsetMs": -10800000,
+  "steps": [
+    {
+      "include": "trial_converts"
+    }
+  ]
+}

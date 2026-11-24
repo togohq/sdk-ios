@@ -1,0 +1,52 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "onboarding_happy_path",
+  "description": "F2, onboarding: started, three steps, completed.",
+  "steps": [
+    {
+      "track": "onboarding_started",
+      "properties": {
+        "flow_id": "initial_setup",
+        "entry_point": "organic"
+      },
+      "at": "+1m"
+    },
+    {
+      "track": "onboarding_step_completed",
+      "properties": {
+        "flow_id": "initial_setup",
+        "step_id": "choose_goals",
+        "step_number": 1,
+        "duration_ms": 45000
+      },
+      "at": "+45s"
+    },
+    {
+      "track": "onboarding_step_completed",
+      "properties": {
+        "flow_id": "initial_setup",
+        "step_id": "set_reminder",
+        "step_number": 2,
+        "duration_ms": 30000
+      },
+      "at": "+30s"
+    },
+    {
+      "track": "onboarding_step_completed",
+      "properties": {
+        "flow_id": "initial_setup",
+        "step_id": "first_session",
+        "step_number": 3,
+        "duration_ms": 120000
+      },
+      "at": "+2m"
+    },
+    {
+      "track": "onboarding_completed",
+      "properties": {
+        "flow_id": "initial_setup",
+        "duration_ms": 195000
+      }
+    }
+  ]
+}

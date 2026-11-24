@@ -1,0 +1,10 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "signup_no_onboarding",
+  "description": "F1 complete and identified, then nothing. identify() links the anonymous history.",
+  "steps": [
+    {
+      "include": "acquisition"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "scenario": "payment_failed_recovered",
+  "now": "2026-10-21T12:00:00.000Z",
+  "seed": 1,
+  "batches": [
+    {
+      "client": "payment_failed_recovered#1:server",
+      "body": {
+        "envelopeVersion": 2,
+        "clientSentTs": "2026-10-21T12:00:00.000Z",
+        "events": [
+          {
+            "eventName": "payment_failed",
+            "clientEventTs": "2026-10-15T05:13:42.380Z",
+            "eventId": "<eventId:1>",
+            "userId": "u_golden_1",
+            "properties": {
+              "plan_id": "premium",
+              "failure_reason": "card_declined",
+              "attempt_number": 1
+            },
+            "sdk": {
+              "name": "sdk-node",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "payment_failed",
+            "clientEventTs": "2026-10-16T05:13:42.380Z",
+            "eventId": "<eventId:2>",
+            "userId": "u_golden_1",
+            "properties": {
+              "plan_id": "premium",
+              "failure_reason": "insufficient_funds",
+              "attempt_number": 2
+            },
+            "sdk": {
+              "name": "sdk-node",
+              "version": "<sdk.version>"
+            }
+          },
+          {
+            "eventName": "subscription_renewed",
+            "clientEventTs": "2026-10-18T05:13:42.380Z",
+            "eventId": "<eventId:3>",
+            "userId": "u_golden_1",
+            "properties": {
+              "plan_id": "premium",
+              "billing_period": "monthly",
+              "amount_minor": 1299,
+              "currency": "USD",
+              "renewal_number": 4
+            },
+            "sdk": {
+              "name": "sdk-node",
+              "version": "<sdk.version>"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

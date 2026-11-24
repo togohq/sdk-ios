@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://togohq.ai/schemas/sdk-scenario-mix/v1.json",
+  "title": "SDK scenario mix (v1)",
+  "description": "A population: each scenario run weight times. Weights are exact counts, so every funnel's step counts are computable from this file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "seed", "scenarios"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "description": {
+      "type": "string"
+    },
+    "seed": {
+      "type": "integer",
+      "description": "Fixes jitter and placement; {{userId}} also carries the run id."
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scenario", "weight"],
+        "properties": {
+          "scenario": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "trial_started",
+  "description": "A free trial began, confirmed by the payment provider.",
+  "trigger": "The provider webhook confirms the trial. Sent from the server.",
+  "nonTriggers": ["Not when checkout completes; only when the provider confirms the trial."],
+  "properties": [
+    {
+      "name": "plan_id",
+      "type": "enum",
+      "required": true,
+      "description": "The plan, as the payment provider knows it.",
+      "semanticRole": "dimension",
+      "cardinality": "low",
+      "queryability": "auto",
+      "enumValues": ["basic", "premium"],
+      "personContext": false
+    },
+    {
+      "name": "trial_days",
+      "type": "integer",
+      "required": true,
+      "description": "Length of the trial in days.",
+      "semanticRole": "measure",
+      "cardinality": "medium",
+      "queryability": "explicit_only",
+      "personContext": false
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "acquisition",
+  "description": "F1: lands, reads pricing, creates an account, is identified and given a profile.",
+  "steps": [
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "landing"
+      }
+    },
+    {
+      "track": "page_viewed",
+      "properties": {
+        "page_type": "pricing"
+      },
+      "at": "+40s"
+    },
+    {
+      "track": "account_created",
+      "properties": {
+        "method": "email"
+      },
+      "at": "+2m"
+    },
+    {
+      "identify": "{{userId}}"
+    },
+    {
+      "setPersonProperties": {
+        "email": "{{userId}}@example.com",
+        "name": "Fixture {{n}}"
+      }
+    }
+  ]
+}

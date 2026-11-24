@@ -1,0 +1,48 @@
+{
+  "$schema": "../mix.schema.json",
+  "name": "b2c_subscription_smoke",
+  "description": "Every scenario of the week, a handful each: the e2e journey's population, small enough to curate in seconds.",
+  "seed": 20261021,
+  "scenarios": [
+    {
+      "scenario": "bounce",
+      "weight": 4
+    },
+    {
+      "scenario": "browse_no_signup",
+      "weight": 3
+    },
+    {
+      "scenario": "signup_no_onboarding",
+      "weight": 2
+    },
+    {
+      "scenario": "onboarding_abandoned",
+      "weight": 2
+    },
+    {
+      "scenario": "paywall_dismissed",
+      "weight": 2
+    },
+    {
+      "scenario": "trial_expires",
+      "weight": 2
+    },
+    {
+      "scenario": "trial_converts",
+      "weight": 2
+    },
+    {
+      "scenario": "direct_purchase",
+      "weight": 1
+    },
+    {
+      "scenario": "payment_failed_recovered",
+      "weight": 1
+    },
+    {
+      "scenario": "subscriber_cancels",
+      "weight": 1
+    }
+  ]
+}

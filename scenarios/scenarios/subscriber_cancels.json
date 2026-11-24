@@ -1,0 +1,24 @@
+{
+  "$schema": "../scenario.schema.json",
+  "name": "subscriber_cancels",
+  "description": "A subscriber from before the window cancels at period end, then reactivates.",
+  "steps": [
+    {
+      "track": "subscription_cancelled",
+      "properties": {
+        "plan_id": "premium",
+        "cancel_reason": "too_expensive",
+        "at_period_end": true
+      },
+      "actor": "server"
+    },
+    {
+      "track": "subscription_reactivated",
+      "properties": {
+        "plan_id": "premium"
+      },
+      "at": "+2d",
+      "actor": "server"
+    }
+  ]
+}
