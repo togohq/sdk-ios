@@ -16,6 +16,8 @@ public struct EngineOptions: Sendable {
   /// The device's IANA zone, read once.
   public var timezone: String?
   public var onError: (@Sendable (TogoError) -> Void)?
+  /// The `sdk` every event names: this SDK's own unless a wrapper set its own.
+  public var sdk: SdkIdentity = .native
   /// Fixed on a device, not options, because batching is the SDK's to set:
   /// 50 events or 5 seconds. Only the scenario runner changes them.
   public var batchSize: Int = 50
@@ -583,11 +585,20 @@ public final class TogoEngine: @unchecked Sendable {
       ?? touchSession { id in
         sessionStarted(id, occurredMs: event.clientEventMs, userId: eventUserId, ids: ids, app: event.app, device: event.device)
       }
-    return RawEvent(
-      eventName: event.eventName, clientEventMs: event.clientEventMs, eventId: event.eventId,
-      anonymousId: ids.anonymousId, deviceId: ids.deviceId, userId: eventUserId,
-      sessionId: sessionId, properties: event.properties, personProperties: event.personProperties,
-      timezone: event.timezone)
+    return named(
+      RawEvent(
+        eventName: event.eventName, clientEventMs: event.clientEventMs, eventId: event.eventId,
+        anonymousId: ids.anonymousId, deviceId: ids.deviceId, userId: eventUserId,
+        sessionId: sessionId, properties: event.properties,
+        personProperties: event.personProperties, timezone: event.timezone))
+  }
+
+  /// The event naming the SDK this engine runs as — a wrapper's, when one set it.
+  private func named(_ event: RawEvent) -> RawEvent {
+    var event = event
+    event.sdkName = options.sdk.name
+    event.sdkVersion = options.sdk.version
+    return event
   }
 
   /// `$session_started`, queued immediately before the event that opened the
@@ -596,10 +607,12 @@ public final class TogoEngine: @unchecked Sendable {
     _ sessionId: String, occurredMs: Int64, userId: String?,
     ids: (deviceId: String, anonymousId: String), app: AppInfo?, device: DeviceInfo?
   ) {
-    let started = RawEvent(
-      eventName: Wire.sessionStartedEvent, clientEventMs: occurredMs, eventId: randomId(),
-      anonymousId: ids.anonymousId, deviceId: ids.deviceId, userId: userId, sessionId: sessionId,
-      properties: [:], personProperties: nil, timezone: options.timezone)
+    let started = named(
+      RawEvent(
+        eventName: Wire.sessionStartedEvent, clientEventMs: occurredMs, eventId: randomId(),
+        anonymousId: ids.anonymousId, deviceId: ids.deviceId, userId: userId,
+        sessionId: sessionId, properties: [:], personProperties: nil,
+        timezone: options.timezone))
     enqueue(started, app: app, device: device)
   }
 

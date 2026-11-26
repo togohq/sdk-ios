@@ -14,8 +14,6 @@
       "required": true,
       "description": "Stable identifier of the onboarding flow, e.g. initial_setup. A flow, not a flow run.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "maxLength": 64,
       "personContext": false
     },
@@ -25,8 +23,6 @@
       "required": false,
       "description": "How the person reached onboarding.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "enumValues": ["organic", "paywall_return"],
       "personContext": false
     }

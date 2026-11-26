@@ -10,8 +10,6 @@
       "required": true,
       "description": "The plan, as the payment provider knows it.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "enumValues": ["basic", "premium"],
       "personContext": false
     },
@@ -21,8 +19,6 @@
       "required": true,
       "description": "The reason chosen in the cancellation flow.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "enumValues": ["too_expensive", "not_using", "missing_feature", "other"],
       "personContext": false
     },
@@ -32,8 +28,6 @@
       "required": true,
       "description": "Whether access continues until the paid period ends.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "personContext": false
     }
   ]

@@ -10,8 +10,6 @@
       "required": true,
       "description": "The plan, as the payment provider knows it.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "enumValues": ["basic", "premium"],
       "personContext": false
     },
@@ -21,8 +19,6 @@
       "required": true,
       "description": "How often the plan is charged.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "enumValues": ["monthly", "annual"],
       "personContext": false
     },
@@ -32,8 +28,6 @@
       "required": true,
       "description": "The charge in the currency's minor unit (cents). An integer, never a float.",
       "semanticRole": "measure",
-      "cardinality": "medium",
-      "queryability": "explicit_only",
       "personContext": false
     },
     {
@@ -42,8 +36,6 @@
       "required": true,
       "description": "ISO 4217 code of amount_minor.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "enumValues": ["USD", "EUR", "GBP"],
       "personContext": false
     },
@@ -53,8 +45,6 @@
       "required": true,
       "description": "Which renewal this is, counting the first renewal as 1.",
       "semanticRole": "dimension",
-      "cardinality": "medium",
-      "queryability": "explicit_only",
       "personContext": false
     }
   ]

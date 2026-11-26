@@ -199,13 +199,23 @@ final class SharedClient: @unchecked Sendable {
       return nil
     }
     let executor = DispatchExecutor()
-    let options = EngineOptions(
+    var options = EngineOptions(
       writeKey: config.writeKey, endpoint: config.endpoint,
       sessionTimeoutSeconds: config.sessionTimeout, consent: config.consent,
       consentBufferMaxEvents: config.consentBufferMaxEvents,
       defaultProperties: config.defaultProperties,
       app: Platform.app(version: config.appVersion, build: config.appBuild),
       device: Platform.device(), timezone: Platform.timezone(), onError: config.onError)
+    if let wrapper = config.wrapper {
+      if let sdk = SdkIdentity(wrapperName: wrapper.name, version: wrapper.version) {
+        options.sdk = sdk
+      } else {
+        log(
+          "Togo.setup() was given a wrapper name or version the server would not read (a name is "
+            + "one of \(Wire.wrapperSdkNames.joined(separator: ", ")); a version is 1 to "
+            + "\(Wire.maxSdkVersionLength) characters with no spaces), so events name \(SDK_NAME) instead.")
+      }
+    }
     let log = self.log
     let environment = device ?? currentDevice(executor: executor)
     let problem = writeKeyProblem(config.writeKey)

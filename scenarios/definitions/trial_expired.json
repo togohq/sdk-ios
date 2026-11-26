@@ -10,8 +10,6 @@
       "required": true,
       "description": "The plan, as the payment provider knows it.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "enumValues": ["basic", "premium"],
       "personContext": false
     }

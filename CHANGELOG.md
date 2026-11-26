@@ -5,6 +5,20 @@ Every notable change to the Togo AI iOS SDK. The format is
 [Semantic Versioning](https://semver.org/): each version is a tag of this repository, which Swift
 Package Manager resolves.
 
+## [1.1.0] - 2026-11-26
+
+This release introduces wrapper SDK naming and fixes UTF-16 version length validation.
+
+### Added
+
+- **`TogoConfig.wrapper`** allows a wrapper SDK to set its name and version on every event, ensuring
+  accurate identification.
+
+### Fixed
+
+- Version length is now correctly validated in UTF-16 code units, preventing batch rejections for
+  certain strings.
+
 ## [1.0.0] - 2026-11-24
 
 The first release of the Togo iOS SDK, providing event tracking and user identification

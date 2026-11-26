@@ -51,6 +51,13 @@ public struct TogoConfig: Sendable {
 
   public static let defaultEndpoint = URL(string: "https://in.togohq.ai")!
 
+  /// For an SDK built over this one — the Solar2D plugin — and nothing else: its
+  /// events name the wrapper (`sdk-solar2d`) instead of `sdk-ios`, so the
+  /// wrapper is what an SDK breakdown counts. A name or version the edge would
+  /// refuse is ignored with one log line and the batch names `sdk-ios`. Behind
+  /// the `Wrapper` SPI (`@_spi(Wrapper) import Togo`), so an app never sees it.
+  @_spi(Wrapper) public var wrapper: TogoWrapper?
+
   public init(
     writeKey: String,
     endpoint: URL = TogoConfig.defaultEndpoint,
@@ -73,5 +80,16 @@ public struct TogoConfig: Sendable {
     self.appVersion = appVersion
     self.appBuild = appBuild
     self.onError = onError
+  }
+}
+
+/// A wrapper SDK's own name and version (`TogoConfig.wrapper`).
+@_spi(Wrapper) public struct TogoWrapper: Sendable, Equatable {
+  public var name: String
+  public var version: String
+
+  public init(name: String, version: String) {
+    self.name = name
+    self.version = version
   }
 }

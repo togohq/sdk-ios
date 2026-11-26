@@ -10,8 +10,6 @@
       "required": true,
       "description": "The plan, as the payment provider knows it.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "enumValues": ["basic", "premium"],
       "personContext": false
     },
@@ -21,8 +19,6 @@
       "required": true,
       "description": "Length of the trial in days.",
       "semanticRole": "measure",
-      "cardinality": "medium",
-      "queryability": "explicit_only",
       "personContext": false
     }
   ]

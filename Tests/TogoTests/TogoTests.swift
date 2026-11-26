@@ -2,7 +2,7 @@ import Foundation
 import TogoCore
 import XCTest
 
-@testable import Togo
+@_spi(Wrapper) @testable import Togo
 
 final class TogoTests: XCTestCase {
   final class Network: TogoTransport, @unchecked Sendable {
@@ -21,6 +21,16 @@ final class TogoTests: XCTestCase {
       lock.lock()
       defer { lock.unlock() }
       return bodies.flatMap { $0["events"]!.arrayValue!.map { $0["eventName"]!.stringValue! } }
+    }
+    /// Every event's `sdk`, as "name@version".
+    var sdks: [String] {
+      lock.lock()
+      defer { lock.unlock() }
+      return bodies.flatMap {
+        $0["events"]!.arrayValue!.map {
+          "\($0["sdk"]!["name"]!.stringValue!)@\($0["sdk"]!["version"]!.stringValue!)"
+        }
+      }
     }
   }
 
@@ -69,6 +79,62 @@ final class TogoTests: XCTestCase {
     XCTAssertEqual(names.count, 40)
     for thread in 0..<4 {
       XCTAssertEqual(names.filter { $0.hasPrefix("t\(thread)_") }, (0..<10).map { "t\(thread)_\($0)" })
+    }
+  }
+
+  /// A wrapper (the Solar2D plugin) names itself on every event, `$` events
+  /// included, so an SDK breakdown counts the wrapper a developer installed.
+  func testAWrapperNamesItselfOnEveryEvent() {
+    let network = Network()
+    let client = SharedClient(log: { _ in })
+    var config = TogoConfig(writeKey: "togo_pkl_live0000000000")
+    config.wrapper = TogoWrapper(name: "sdk-solar2d", version: "1.2.0")
+    client.setup(config, transport: network, device: .memory(), serverRuntime: nil)
+    client.client { $0.track("level_complete") }
+    flushed(client)
+    XCTAssertFalse(network.sdks.isEmpty)
+    XCTAssertEqual(Set(network.sdks), ["sdk-solar2d@1.2.0"])
+  }
+
+  /// Without a wrapper, nothing changes.
+  func testWithoutAWrapperEventsNameThisSdk() {
+    let network = Network()
+    let client = SharedClient(log: { _ in })
+    client.setup(
+      TogoConfig(writeKey: "togo_pkl_live0000000000"), transport: network, device: .memory(),
+      serverRuntime: nil)
+    client.client { $0.track("a") }
+    flushed(client)
+    XCTAssertEqual(Set(network.sdks), ["\(SDK_NAME)@\(SDK_VERSION)"])
+  }
+
+  /// A name the server would not read, or a version the edge would refuse,
+  /// never costs the batch: it is ignored with one line, and events name this SDK.
+  func testAWrapperTheEdgeWouldRefuseIsIgnoredAndSaidOnce() {
+    for wrapper in [
+      TogoWrapper(name: "Solar2D", version: "1.0.0"),
+      TogoWrapper(name: "sdk-", version: "1.0.0"),
+      TogoWrapper(name: "sdk-solar2d", version: ""),
+      TogoWrapper(name: "sdk-solar2d", version: String(repeating: "1", count: 33)),
+      TogoWrapper(name: "sdk-" + String(repeating: "a", count: 61), version: "1.0.0"),
+      TogoWrapper(name: "sdk-solar2d", version: "1.0 beta"),
+      // A wrapper the server does not read a platform for would land as unknown.
+      TogoWrapper(name: "sdk-flutter", version: "1.0.0"),
+      // 17 emoji are 17 characters and 34 UTF-16 units, past the edge's 32.
+      TogoWrapper(name: "sdk-solar2d", version: String(repeating: "🙂", count: 17)),
+      // A decomposed ü is one character and two UTF-16 units.
+      TogoWrapper(name: "sdk-solar2d", version: String(repeating: "u\u{0308}", count: 17)),
+    ] {
+      let network = Network()
+      let lines = Lines()
+      let client = SharedClient(log: { lines.append($0) })
+      var config = TogoConfig(writeKey: "togo_pkl_live0000000000")
+      config.wrapper = wrapper
+      client.setup(config, transport: network, device: .memory(), serverRuntime: nil)
+      client.client { $0.track("a") }
+      flushed(client)
+      XCTAssertEqual(Set(network.sdks), ["\(SDK_NAME)@\(SDK_VERSION)"], wrapper.name)
+      XCTAssertEqual(lines.lines.filter { $0.contains("wrapper name or version") }.count, 1)
     }
   }
 

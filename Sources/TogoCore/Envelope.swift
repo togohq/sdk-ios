@@ -15,10 +15,51 @@
 public let SDK_NAME = "sdk-ios"
 /// The package's own semver, set by the release, which also tags the public
 /// repository with it. The first published version is 1.0.0.
-public let SDK_VERSION = "1.0.0"
+public let SDK_VERSION = "1.1.0"
+
+/// The `sdk` a batch names: this SDK's own, or a wrapper's built over it.
+///
+/// A wrapper is an SDK for another runtime that calls this one underneath —
+/// the Solar2D plugin, `sdk-solar2d`. Its events name the wrapper, because that
+/// is what a developer installed and what a breakdown by SDK should count; the
+/// server reads the platform of a wrapper's batch from its `device`, which this
+/// SDK still fills. Set only through the `Wrapper` SPI (`TogoConfig.wrapper`),
+/// never by an app.
+public struct SdkIdentity: Sendable, Equatable {
+  public let name: String
+  public let version: String
+
+  /// This SDK, as it names itself.
+  public static let native = SdkIdentity(uncheckedName: SDK_NAME, version: SDK_VERSION)
+
+  /// A wrapper's name and version, or nil when they would not be read as one —
+  /// then the batch keeps naming this SDK. The name is one the server reads a
+  /// wrapper's platform for (`Wire.wrapperSdkNames`): any other would land as
+  /// `unknown` and lose its device. The version is non-empty, holds no
+  /// whitespace, and is at most `Wire.maxSdkVersionLength` UTF-16 code units,
+  /// as the edge counts — `count` counts characters, and an emoji or a
+  /// combining mark would pass it while the edge refused every batch.
+  public init?(wrapperName name: String, version: String) {
+    guard Wire.wrapperSdkNames.contains(name), !version.isEmpty,
+      version.utf16.count <= Wire.maxSdkVersionLength,
+      version.allSatisfy({ !$0.isWhitespace })
+    else { return nil }
+    self.init(uncheckedName: name, version: version)
+  }
+
+  private init(uncheckedName name: String, version: String) {
+    self.name = name
+    self.version = version
+  }
+}
 
 public enum Wire {
   public static let envelopeVersion = 2
+  /// The edge's bound on `sdk.version`, in UTF-16 code units.
+  public static let maxSdkVersionLength = 32
+  /// The wrapper SDKs the server reads a platform for from the batch's
+  /// `device.os`; a wrapper not listed here names this SDK instead.
+  public static let wrapperSdkNames = ["sdk-solar2d"]
   public static let maxBatchSize = 500
   /// How old an event may be when it is UPLOADED. The edge rejects anything
   /// older, so the queue drops it locally and logs the count. A data-loss dial:

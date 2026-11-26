@@ -14,8 +14,6 @@
       "required": true,
       "description": "Stable identifier of the onboarding flow, e.g. initial_setup. A flow, not a flow run.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "maxLength": 64,
       "personContext": false
     },
@@ -25,8 +23,6 @@
       "required": true,
       "description": "Stable identifier of the step, e.g. invite_team. Never a display label.",
       "semanticRole": "dimension",
-      "cardinality": "low",
-      "queryability": "auto",
       "maxLength": 64,
       "personContext": false
     },
@@ -36,8 +32,6 @@
       "required": true,
       "description": "Position of the step within the flow, starting at 1. Ordering the funnel by step_id alone is not possible.",
       "semanticRole": "measure",
-      "cardinality": "low",
-      "queryability": "auto",
       "personContext": false
     },
     {
@@ -46,8 +40,6 @@
       "required": false,
       "description": "Milliseconds from the step being presented to it completing.",
       "semanticRole": "measure",
-      "cardinality": "high",
-      "queryability": "explicit_only",
       "personContext": false
     }
   ]
