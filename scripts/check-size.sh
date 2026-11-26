@@ -15,10 +15,13 @@
 # because the App Store's download size depends on compression and app
 # thinning. The resource bundle (the privacy manifest, ~2 KB) is not counted.
 #
-# THE CEILING: 340 KB. It started at 400 KB, an estimate; the first real
+# THE CEILING: 420 KB. It started at 400 KB, an estimate; the first real
 # measurement, on 2026-11-19 with Xcode 26.4, was 275,723 bytes (269 KB), and
-# the gate is set about 25% above it. Raise it deliberately, in the same commit
-# as the reason — never quietly. The Swift runtime ships with iOS, so this is
+# the gate was set about 25% above it, at 340 KB. getExperiment() — a stored
+# answer, the assignment request, the exposure and the stamp — took the SDK
+# from 329,005 bytes (321 KB) to 392,383 (383 KB) on 2026-11-26, and the gate
+# went to 420 KB, about 10% above that. Raise it deliberately, in the same
+# commit as the reason — never quietly. The Swift runtime ships with iOS, so this is
 # the SDK's own code only, and one dependency would trip it on its own.
 #
 # THE LINKED FRAMEWORKS: the example app's binary must link neither AdSupport
@@ -37,7 +40,7 @@
 set -eu
 cd "$(dirname "$0")/.."
 
-CEILING_BYTES=$((340 * 1024))
+CEILING_BYTES=$((420 * 1024))
 FORBIDDEN="AdSupport AppTrackingTransparency"
 
 if ! command -v xcodebuild >/dev/null 2>&1 || ! xcodebuild -version >/dev/null 2>&1; then

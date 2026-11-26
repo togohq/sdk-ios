@@ -5,6 +5,32 @@ Every notable change to the Togo AI iOS SDK. The format is
 [Semantic Versioning](https://semver.org/): each version is a tag of this repository, which Swift
 Package Manager resolves.
 
+## [1.2.0] - 2026-11-26
+
+Version 1.2.0 introduces experiment management with offline capabilities and improves session
+handling.
+
+### Added
+
+- **`getExperiment()`** and **`cachedExperiment()`** provide stored answers for experiments, working
+  offline and supporting first screen decisions.
+
+### Changed
+
+- The SDK now handles experiment exposure and stamps more effectively, ensuring consistent session
+  behavior.
+- Documentation now includes details on `getExperiment`, `cachedExperiment`, and related
+  configurations.
+
+### Fixed
+
+- A finished experiment's stamp now remains ended for the entire session, preventing incorrect
+  re-stamping.
+- **`reset()`** now retains the record of entered experiments even on a locked device, ensuring
+  accurate tracking.
+- **`setup()`** no longer mints IDs when there are no experiments to preload, avoiding unnecessary
+  ID creation.
+
 ## [1.1.0] - 2026-11-26
 
 This release introduces wrapper SDK naming and fixes UTF-16 version length validation.

@@ -170,9 +170,12 @@ public enum ScenarioDriver {
     let clock = VirtualClock(at: nowMs)
     clock.skew = plan.deviceClockOffsetMs
     network.label = "\(plan.scenario)#\(plan.n):app"
+    network.assignments = plan.assignments
     let executor = InlineExecutor()
     let identity = MemoryIdentityStore()
     let queue = MemoryQueueStore()
+    // Like the identity and the queue, the stored answers outlive a launch.
+    let experiments = MemoryExperimentStore()
     let deviceIds = FixedIdfv()
     var engine: TogoEngine?
     var lifecycle: AppLifecycle?
@@ -194,7 +197,7 @@ public enum ScenarioDriver {
         let next = AppLifecycle()
         let started = TogoEngine(
           options: options, identityStore: identity, deviceIds: deviceIds, queueStore: queue,
-          transport: network, executor: executor, callbacks: executor, clock: clock, log: { _ in },
+          experimentStore: experiments, transport: network, executor: executor, callbacks: executor, clock: clock, log: { _ in },
           humanPresent: { next.isForeground })
         next.launched(started)
         (engine, lifecycle) = (started, next)
@@ -217,6 +220,10 @@ public enum ScenarioDriver {
         engine.reset()
       } else if call["flush"] != nil {
         release(engine, network: network, clock: clock, nowMs: nowMs)
+      } else if let name = call["getExperiment"]?.stringValue {
+        engine.getExperiment(name) { _ in }
+      } else if let name = call["cachedExperiment"]?.stringValue {
+        _ = engine.cachedExperiment(name)
       }
     }
     if let engine { release(engine, network: network, clock: clock, nowMs: nowMs) }
@@ -299,11 +306,26 @@ final class HeldNetwork: TogoTransport, @unchecked Sendable {
   var label = ""
   var sent: [ScenarioDriver.Upload] = []
   var forward: TogoTransport?
+  /// The scenario's stand-in for the assignment service, which answers at
+  /// once and is never recorded: the goldens are what the device uploads.
+  var assignments: [String: JSONValue] = [:]
 
   func post(
     url: URL, writeKey: String, body: Data,
     completion: @escaping @Sendable (TransportResponse) -> Void
   ) {
+    if url.path.hasSuffix("v1/assignments") {
+      let names = (try? JSONValue.parse(body))?["experiments"]?.arrayValue?.compactMap(\.stringValue) ?? []
+      var answers: [String: JSONValue] = [:]
+      for name in names {
+        answers[name] =
+          assignments[name]
+          ?? .object(["status": .string("not_found"), "variant": .null, "participating": .bool(false)])
+      }
+      let answer = JSONValue.object(["maxAgeSeconds": .int(3600), "assignments": .object(answers)])
+      completion(TransportResponse(status: 200, body: Data(answer.serialized().utf8)))
+      return
+    }
     guard released, let json = try? JSONValue.parse(body) else {
       completion(TransportResponse(status: nil))
       return

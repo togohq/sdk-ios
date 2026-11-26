@@ -99,4 +99,5 @@ enum Platform {
 
   static func queueURL() -> URL { directory().appendingPathComponent("queue.jsonl") }
   static func identityURL() -> URL { directory().appendingPathComponent("identity.json") }
+  static func experimentsURL() -> URL { directory().appendingPathComponent("experiments.json") }
 }

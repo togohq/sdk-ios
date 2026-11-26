@@ -65,6 +65,42 @@ public enum Togo {
       PersonPropertyUpdate(email: email, name: name, set: set, setOnce: setOnce, unset: unset))
   }
 
+  /// Which variant of an experiment this device gets:
+  ///
+  /// ```swift
+  /// let result = await Togo.getExperiment("checkout_redesign")
+  /// if result.variant == "new" { showNewCheckout() } else { showCheckout() }
+  /// ```
+  ///
+  /// A participant's first answer records `$experiment_entered` — once per
+  /// person per experiment, across launches — and later events carry the
+  /// variant; there is no separate logging call. **A stored answer is returned
+  /// at once, offline included**, and refreshed in the background when old;
+  /// with none stored it asks the network, for at most 800 ms. `variant == nil`
+  /// means run your default path: before the first answer with no network,
+  /// with consent pending or denied, or with the app in the background.
+  public static func getExperiment(_ name: String) async -> TogoExperiment {
+    await withCheckedContinuation { continuation in
+      getExperiment(name) { continuation.resume(returning: $0) }
+    }
+  }
+
+  /// `getExperiment(_:)` with a completion handler, which runs off the main
+  /// thread and off the SDK's queue.
+  public static func getExperiment(
+    _ name: String, completion: @escaping @Sendable (TogoExperiment) -> Void
+  ) {
+    shared.getExperiment(name, completion: completion)
+  }
+
+  /// The answer this device has stored for `name`, now, with no network: for
+  /// choosing the first screen before anything could arrive. `nil` when there
+  /// is none — run your default path. Records the exposure as
+  /// `getExperiment(_:)` does, so the answer you branch on is the one counted.
+  public static func cachedExperiment(_ name: String) -> TogoExperiment? {
+    shared.read(default: nil) { $0.cachedExperiment(name) }
+  }
+
   /// Call at logout. A new anonymous visitor and a new session on this device;
   /// the device id stays.
   public static func reset() {
@@ -108,6 +144,7 @@ public enum Togo {
 struct DeviceEnvironment {
   var identityStore: IdentityStore
   var queueStore: QueueStore
+  var experimentStore: ExperimentStore = MemoryExperimentStore()
   var deviceIds: DeviceIdProvider
   /// Reports the app's lifecycle — `AppLifecycle` driven by the UIKit adapter.
   /// Without it — AppKit macOS, a test — there are no lifecycle events, and every event
@@ -123,11 +160,12 @@ struct DeviceEnvironment {
   /// surface, testable on any platform.
   static func memory(
     identity: IdentityStore = MemoryIdentityStore(), queue: QueueStore = MemoryQueueStore(),
+    experiments: ExperimentStore = MemoryExperimentStore(),
     deviceIds: DeviceIdProvider = GeneratedDeviceIdProvider(), reportsLifecycle: Bool = false
   ) -> DeviceEnvironment {
     DeviceEnvironment(
-      identityStore: identity, queueStore: queue, deviceIds: deviceIds,
-      reportsLifecycle: reportsLifecycle)
+      identityStore: identity, queueStore: queue, experimentStore: experiments,
+      deviceIds: deviceIds, reportsLifecycle: reportsLifecycle)
   }
 }
 
@@ -206,6 +244,8 @@ final class SharedClient: @unchecked Sendable {
       defaultProperties: config.defaultProperties,
       app: Platform.app(version: config.appVersion, build: config.appBuild),
       device: Platform.device(), timezone: Platform.timezone(), onError: config.onError)
+    options.assignEndpoint = config.assignEndpoint
+    options.experiments = config.experiments
     if let wrapper = config.wrapper {
       if let sdk = SdkIdentity(wrapperName: wrapper.name, version: wrapper.version) {
         options.sdk = sdk
@@ -225,7 +265,7 @@ final class SharedClient: @unchecked Sendable {
       let engine = TogoEngine(
         options: options, identityStore: environment.identityStore,
         deviceIds: environment.deviceIds, queueStore: environment.queueStore,
-        transport: transport, executor: executor, callbacks: callbacks, log: log,
+        experimentStore: environment.experimentStore, transport: transport, executor: executor, callbacks: callbacks, log: log,
         humanPresent: { lifecycle?.isForeground ?? true })
       // A malformed key is a typo or an unsubstituted build setting: the
       // client is inert with one error that says why, never a crash.
@@ -233,6 +273,8 @@ final class SharedClient: @unchecked Sendable {
       // The launch: owes `$app_installed`/`$app_updated`, opens no session
       // unless a scene is already in front (a prewarmed launch is not an open).
       lifecycle?.launched(engine, foregroundScenes: foregroundScenes)
+      // With no lifecycle there is no `$app_opened` to fetch at: fetch now.
+      if lifecycle == nil { engine.preloadExperiments(config.experiments) }
       self.engine = engine
     }
     self.executor = executor
@@ -252,16 +294,17 @@ final class SharedClient: @unchecked Sendable {
       url: Platform.identityURL(), protectedDataAvailable: { protectedData.value },
       scheduler: executor, log: log)
     let queue = FileQueueStore(url: Platform.queueURL())
+    let experiments = FileExperimentStore(url: Platform.experimentsURL())
     #if canImport(UIKit) && !os(watchOS)
       let idfv = IdfvProvider()
       idfv.onRead = { [weak self] in self?.identityBecameAvailable() }
       return DeviceEnvironment(
-        identityStore: identity, queueStore: queue, deviceIds: idfv, reportsLifecycle: true,
-        observe: { [weak self] sink in self?.startAdapter(sink) })
+        identityStore: identity, queueStore: queue, experimentStore: experiments, deviceIds: idfv,
+        reportsLifecycle: true, observe: { [weak self] sink in self?.startAdapter(sink) })
     #else
       return DeviceEnvironment(
-        identityStore: identity, queueStore: queue, deviceIds: GeneratedDeviceIdProvider(),
-        reportsLifecycle: false)
+        identityStore: identity, queueStore: queue, experimentStore: experiments,
+        deviceIds: GeneratedDeviceIdProvider(), reportsLifecycle: false)
     #endif
   }
 
@@ -367,6 +410,22 @@ final class SharedClient: @unchecked Sendable {
     // back onto it — a `sync` would trap; the state is ours to read here.
     if executor.isCurrent { return value(engine) }
     return executor.queue.sync { value(engine) }
+  }
+
+  /// The engine answers on its own queue; the app's completion runs on the
+  /// callback queue. Before `setup()`, or on a disabled client, `unavailable`.
+  func getExperiment(_ name: String, completion: @escaping @Sendable (TogoExperiment) -> Void) {
+    lock.lock()
+    let engine = engine
+    let executor = executor
+    let callbacks = callbacks
+    lock.unlock()
+    guard let engine, let executor, let callbacks else {
+      return completion(.unavailable(name))
+    }
+    executor.queue.async {
+      engine.getExperiment(name) { result in callbacks.async { completion(result) } }
+    }
   }
 
   func flush(completion: (@Sendable () -> Void)?) {

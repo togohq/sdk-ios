@@ -28,6 +28,37 @@ final class Harness: @unchecked Sendable {
     /// the process is killed first.
     var holds = false
     var held: [@Sendable (TransportResponse) -> Void] = []
+    /// The assignment service: what each `/v1/assignments` request asked for,
+    /// and how it is answered — offline unless a test says otherwise.
+    var assignRequests: [JSONValue] = []
+    var assign: (JSONValue) -> TransportResponse = { _ in TransportResponse(status: nil) }
+    /// Assignment requests go out and wait for `answerAssign(_:)`.
+    var holdsAssign = false
+    var heldAssign: [(JSONValue, @Sendable (TransportResponse) -> Void)] = []
+
+    func answerAssign() {
+      let (body, completion) = heldAssign.removeFirst()
+      completion(assign(body))
+    }
+
+    /// The assignment service's answer, in its wire format.
+    static func assignments(
+      _ answers: [String: (status: String, variant: String?, participating: Bool)],
+      unit: String = "anonymous_id", maxAgeSeconds: Int64 = 3600
+    ) -> TransportResponse {
+      var object: [String: JSONValue] = [:]
+      for (name, answer) in answers {
+        object[name] = .object([
+          "status": .string(answer.status),
+          "variant": answer.variant.map(JSONValue.string) ?? .null,
+          "participating": .bool(answer.participating), "unit": .string(unit),
+        ])
+      }
+      let body = JSONValue.object([
+        "maxAgeSeconds": .int(maxAgeSeconds), "assignments": .object(object),
+      ])
+      return TransportResponse(status: 200, body: Data(body.serialized().utf8))
+    }
 
     func answer(_ response: TransportResponse = TransportResponse(status: 202, body: Data("{}".utf8))) {
       held.removeFirst()(response)
@@ -37,6 +68,16 @@ final class Harness: @unchecked Sendable {
       url: URL, writeKey: String, body: Data,
       completion: @escaping @Sendable (TransportResponse) -> Void
     ) {
+      if url.path.hasSuffix("v1/assignments") {
+        let json = try! JSONValue.parse(body)
+        assignRequests.append(json)
+        if holdsAssign {
+          heldAssign.append((json, completion))
+        } else {
+          completion(assign(json))
+        }
+        return
+      }
       sent.append(try! JSONValue.parse(body))
       urls.append(url)
       keys.append(writeKey)
@@ -53,10 +94,19 @@ final class Harness: @unchecked Sendable {
 
   final class Executor: TogoExecutor, @unchecked Sendable {
     var timers: [Double] = []
+    /// The timers' work, kept so a test can fire one: `fire(0.8)`.
+    var scheduled: [(seconds: Double, work: @Sendable () -> Void)] = []
     func async(_ work: @escaping @Sendable () -> Void) { work() }
     func after(_ seconds: Double, _ work: @escaping @Sendable () -> Void) -> @Sendable () -> Void {
       timers.append(seconds)
+      scheduled.append((seconds, work))
       return {}
+    }
+    /// Run the timers set for `seconds`, as if that much time had passed.
+    func fire(_ seconds: Double) {
+      let due = scheduled.filter { $0.seconds == seconds }
+      scheduled.removeAll { $0.seconds == seconds }
+      due.forEach { $0.work() }
     }
   }
 
@@ -73,6 +123,7 @@ final class Harness: @unchecked Sendable {
   /// What the engine reads: `identity`, unless a test passes a file store.
   let identityStore: IdentityStore
   let queueStore: MemoryQueueStore
+  let experimentStore: MemoryExperimentStore
   let deviceIds: DeviceIdProvider
   /// The lifecycle of the current process when the harness drives one: the
   /// engine then sees a human only while a scene is in front, as on a device.
@@ -92,6 +143,7 @@ final class Harness: @unchecked Sendable {
     identity: MemoryIdentityStore = MemoryIdentityStore(),
     identityStore: IdentityStore? = nil,
     queueStore: MemoryQueueStore = MemoryQueueStore(),
+    experimentStore: MemoryExperimentStore = MemoryExperimentStore(),
     deviceIds: DeviceIdProvider = GeneratedDeviceIdProvider(),
     lifecycle: Bool = false,
     foregroundAtLaunch: Set<String> = []
@@ -99,6 +151,7 @@ final class Harness: @unchecked Sendable {
     self.identity = identity
     self.identityStore = identityStore ?? identity
     self.queueStore = queueStore
+    self.experimentStore = experimentStore
     self.deviceIds = deviceIds
     drivesLifecycle = lifecycle
     let sink = self.sink
@@ -119,7 +172,7 @@ final class Harness: @unchecked Sendable {
     let lifecycle = drivesLifecycle ? AppLifecycle() : nil
     engine = TogoEngine(
       options: options, identityStore: identityStore, deviceIds: deviceIds, queueStore: queueStore,
-      transport: network, executor: executor, callbacks: executor, clock: clock,
+      experimentStore: experimentStore, transport: network, executor: executor, callbacks: executor, clock: clock,
       log: { sink.logs.append($0) },
       humanPresent: { lifecycle?.isForeground ?? true })
     self.lifecycle = lifecycle

@@ -75,7 +75,7 @@ sh scripts/check-size.sh          # the size gate and the linked-frameworks chec
 ```
 
 The size gate builds `Examples/TogoExample` in Release for arm64 with and without the package and
-fails when the SDK adds more than 340 KB, or when the app links `AdSupport` or
+fails when the SDK adds more than 420 KB, or when the app links `AdSupport` or
 `AppTrackingTransparency`. The UIKit adapter only forwards notifications; the rules it forwards into
 are in `TogoCore`, so `swift test` covers them anywhere. What neither can show is a device before
 its first unlock after a reboot: the identity file and the IDFV are unreadable then, and only a

@@ -7,6 +7,8 @@ public typealias TogoConsent = TogoCore.TogoConsent
 public typealias TogoError = TogoCore.TogoError
 public typealias TogoErrorCode = TogoCore.TogoErrorCode
 public typealias PersonPropertyUpdate = TogoCore.PersonPropertyUpdate
+public typealias TogoExperiment = TogoCore.TogoExperiment
+public typealias TogoExperimentStatus = TogoCore.TogoExperimentStatus
 
 /// What to do once consent is refused. Only `.drop` exists, and the type says
 /// so rather than accepting a value it would ignore (`consent.ts`).
@@ -48,8 +50,15 @@ public struct TogoConfig: Sendable {
   /// recorded, in production too. Never for consent `.denied`. Called off the
   /// SDK's queue, after the call that caused it returns.
   public var onError: (@Sendable (TogoError) -> Void)?
+  /// The experiments this app branches on, fetched whenever the app comes to
+  /// the foreground, so the first `getExperiment()` — or a `cachedExperiment()`
+  /// later, offline — has an answer. Fetching records no exposure.
+  public var experiments: [String]
+  /// Where experiment assignments come from. Defaults to the production service.
+  public var assignEndpoint: URL
 
   public static let defaultEndpoint = URL(string: "https://in.togohq.ai")!
+  public static let defaultAssignEndpoint = URL(string: "https://assign.togohq.ai")!
 
   /// For an SDK built over this one — the Solar2D plugin — and nothing else: its
   /// events name the wrapper (`sdk-solar2d`) instead of `sdk-ios`, so the
@@ -68,7 +77,9 @@ public struct TogoConfig: Sendable {
     defaultProperties: TogoProperties = [:],
     appVersion: String? = nil,
     appBuild: String? = nil,
-    onError: (@Sendable (TogoError) -> Void)? = nil
+    onError: (@Sendable (TogoError) -> Void)? = nil,
+    experiments: [String] = [],
+    assignEndpoint: URL = TogoConfig.defaultAssignEndpoint
   ) {
     self.writeKey = writeKey
     self.endpoint = endpoint
@@ -80,6 +91,8 @@ public struct TogoConfig: Sendable {
     self.appVersion = appVersion
     self.appBuild = appBuild
     self.onError = onError
+    self.experiments = experiments
+    self.assignEndpoint = assignEndpoint
   }
 }
 

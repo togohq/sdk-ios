@@ -27,9 +27,12 @@ public enum ScenarioFormat {
   static let verbs = ["track", "identify", "setPersonProperties", "setConsent", "reset", "flush"]
   static let stepKeys = Set(verbs + ["include", "properties", "at", "actor", "device", "expectRejected"])
   /// The native profile (`native/`, `scenarios/README.md` → Native scenarios):
-  /// the device verbs plus the three only an app has. One device, no `server`
-  /// actor and no includes, so the steps are one app's life and nothing else.
-  static let nativeVerbs = verbs + ["launch", "foreground", "background"]
+  /// the device verbs plus the three only an app has, and the two experiment
+  /// reads only a native SDK performs. One device, no `server` actor and no
+  /// includes, so the steps are one app's life and nothing else.
+  static let nativeVerbs = verbs + [
+    "launch", "foreground", "background", "getExperiment", "cachedExperiment",
+  ]
   static let nativeStepKeys = Set(nativeVerbs + ["properties", "at"])
   static let initKeys: Set<String> = ["consent", "onDenied", "sessionTimeoutSeconds", "defaultProperties"]
 
@@ -100,13 +103,19 @@ public enum ScenarioFormat {
           problems.append("\(step.origin): \(verb) names a scene")
         }
       }
+      for verb in ["getExperiment", "cachedExperiment"] where object[verb] != nil {
+        if object[verb]?.stringValue?.isEmpty != false {
+          problems.append("\(step.origin): \(verb) names an experiment")
+        }
+      }
     }
     if !problems.isEmpty {
       throw ScenarioError("native scenario \(name): \(problems.joined(separator: "; "))")
     }
     return Scenario(
       name: name, initOptions: raw["init"]?.objectValue ?? [:],
-      deviceClockOffsetMs: raw["deviceClockOffsetMs"]?.int64Value ?? 0, steps: steps)
+      deviceClockOffsetMs: raw["deviceClockOffsetMs"]?.int64Value ?? 0, steps: steps,
+      assignments: raw["assignments"]?.objectValue ?? [:])
   }
 
   public static func loadScenario(_ name: String, root: URL = defaultRoot) throws -> Scenario {
@@ -279,7 +288,8 @@ public enum ScenarioFormat {
     return Plan(
       scenario: scenario.name, n: n, userId: userId,
       initOptions: fill(.object(scenario.initOptions), userId: userId, n: n).objectValue ?? [:],
-      deviceClockOffsetMs: scenario.deviceClockOffsetMs, items: items)
+      deviceClockOffsetMs: scenario.deviceClockOffsetMs, items: items,
+      assignments: scenario.assignments)
   }
 
   /// `{{userId}}`, `{{n}}` and `{{chars:N}}` in every string.
@@ -329,6 +339,9 @@ public struct Scenario: Sendable {
   public var initOptions: [String: JSONValue]
   public var deviceClockOffsetMs: Int64
   public var steps: [Step]
+  /// What the assignment service answers this device, per experiment name
+  /// (native scenarios only).
+  public var assignments: [String: JSONValue] = [:]
 }
 
 public struct PlanItem: Sendable {
@@ -348,6 +361,7 @@ public struct Plan: Sendable {
   public var initOptions: [String: JSONValue]
   public var deviceClockOffsetMs: Int64
   public var items: [PlanItem]
+  public var assignments: [String: JSONValue] = [:]
 
   /// In time order, stably.
   public var ordered: [PlanItem] {

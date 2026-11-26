@@ -15,7 +15,7 @@
 public let SDK_NAME = "sdk-ios"
 /// The package's own semver, set by the release, which also tags the public
 /// repository with it. The first published version is 1.0.0.
-public let SDK_VERSION = "1.1.0"
+public let SDK_VERSION = "1.2.0"
 
 /// The `sdk` a batch names: this SDK's own, or a wrapper's built over it.
 ///
@@ -236,6 +236,10 @@ public struct RawEvent: Sendable, Equatable {
   public var properties: TogoProperties
   public var personProperties: PersonPropertyOps?
   public var timezone: String?
+  /// Experiment name → variant: the still-active experiments this device
+  /// entered, stamped at `track()` so a queued event keeps the stamp it was
+  /// tracked with. `nil` when there are none.
+  public var experiments: [String: String]?
   public var sdkName: String
   public var sdkVersion: String
 
@@ -253,6 +257,7 @@ public struct RawEvent: Sendable, Equatable {
     if let sessionId { object["sessionId"] = .string(sessionId) }
     if let personProperties { object["personProperties"] = personProperties.json }
     if let timezone { object["timezone"] = .string(timezone) }
+    if let experiments { object["experiments"] = .object(experiments.mapValues(JSONValue.string)) }
     return .object(object)
   }
 
@@ -272,6 +277,7 @@ public struct RawEvent: Sendable, Equatable {
     self.properties = properties
     self.personProperties = PersonPropertyOps(json: json["personProperties"])
     self.timezone = json["timezone"]?.stringValue
+    self.experiments = json["experiments"]?.objectValue?.compactMapValues(\.stringValue)
     self.sdkName = json["sdk"]?["name"]?.stringValue ?? SDK_NAME
     self.sdkVersion = json["sdk"]?["version"]?.stringValue ?? SDK_VERSION
   }

@@ -18,6 +18,11 @@ public struct EngineOptions: Sendable {
   public var onError: (@Sendable (TogoError) -> Void)?
   /// The `sdk` every event names: this SDK's own unless a wrapper set its own.
   public var sdk: SdkIdentity = .native
+  /// Where `getExperiment()` asks: the assignment service.
+  public var assignEndpoint: URL = Experiments.defaultEndpoint
+  /// Experiment names fetched at each `$app_opened` without an exposure, so the
+  /// first `getExperiment()` of a launch does not wait.
+  public var experiments: [String] = []
   /// Fixed on a device, not options, because batching is the SDK's to set:
   /// 50 events or 5 seconds. Only the scenario runner changes them.
   public var batchSize: Int = 50
@@ -57,6 +62,7 @@ public struct EngineOptions: Sendable {
 public final class TogoEngine: @unchecked Sendable {
   public let options: EngineOptions
   private let identityStore: IdentityStore
+  private var assignments: Experiments!
   private let deviceIds: DeviceIdProvider
   private let transport: TogoTransport
   private let executor: TogoExecutor
@@ -134,6 +140,7 @@ public final class TogoEngine: @unchecked Sendable {
     identityStore: IdentityStore = MemoryIdentityStore(),
     deviceIds: DeviceIdProvider = GeneratedDeviceIdProvider(),
     queueStore: QueueStore = MemoryQueueStore(),
+    experimentStore: ExperimentStore = MemoryExperimentStore(),
     transport: TogoTransport = URLSessionTransport(),
     executor: TogoExecutor,
     callbacks: TogoExecutor,
@@ -162,9 +169,26 @@ public final class TogoEngine: @unchecked Sendable {
         code == .queueFull ? "queue full (long offline, or one huge event)" : "older than 7 days"
       self.report(code, "\(events.count) event(s) dropped: \(reason)", events.map(\.eventId))
     }
+    assignments = Experiments(
+      writeKey: options.writeKey, endpoint: options.assignEndpoint, store: experimentStore,
+      transport: transport, executor: executor, clock: clock,
+      ids: { [unowned self] in
+        guard !disabled, let ids = identity() else { return nil }
+        return Experiments.Ids(anonymousId: ids.anonymousId, deviceId: ids.deviceId, userId: userId)
+      },
+      sessionId: { [unowned self] in sessionId }, humanPresent: humanPresent,
+      enter: { [unowned self] name, variant in
+        _ = submit(
+          Wire.experimentEnteredEvent,
+          ["experiment": .string(name), "variant": .string(variant)], personProperties: nil,
+          timezone: options.timezone)
+      })
     // A queue left on the device by a client whose consent is now `denied` is
     // deleted rather than read: those events predate the refusal.
-    if consent == .denied { queue.clear() }
+    if consent == .denied {
+      queue.clear()
+      experimentStore.remove()
+    }
   }
 
   // MARK: - The public surface
@@ -262,6 +286,32 @@ public final class TogoEngine: @unchecked Sendable {
     return submit(carrier, [:], personProperties: ops, timezone: nil, drops: drops)
   }
 
+  /// Which variant of an experiment this device gets. The stored answer when
+  /// there is one — at any age, offline included, refreshed in the background
+  /// when old — or the network's, within 800 ms; `unavailable` otherwise. A
+  /// participant's first answer records `$experiment_entered`, once per unit
+  /// per experiment, and later events carry the variant. `completion` runs on
+  /// the engine's executor.
+  public func getExperiment(
+    _ name: String, completion: @escaping @Sendable (TogoExperiment) -> Void
+  ) {
+    if disabled { return completion(.unavailable(name)) }
+    assignments.get(name, completion: completion)
+  }
+
+  /// The stored answer, now, with no network: `nil` when this device has none.
+  /// Records the exposure as `getExperiment()` does.
+  public func cachedExperiment(_ name: String) -> TogoExperiment? {
+    if disabled { return nil }
+    return assignments.cached(name)
+  }
+
+  /// Fetch these names without recording an exposure.
+  public func preloadExperiments(_ names: [String]) {
+    if disabled { return }
+    assignments.preload(names)
+  }
+
   /// Logout: a new anonymous visitor and a new session; the device id stays.
   public func reset() {
     loadIfPermitted()
@@ -281,6 +331,7 @@ public final class TogoEngine: @unchecked Sendable {
       // a pass through `pending`, and deleting is not writing, so it needs no
       // permission of its own.
       identityStore.erase()
+      assignments.clear()
       record = IdentityRecord()
       loaded = true
       sessions.forget()
@@ -405,6 +456,9 @@ public final class TogoEngine: @unchecked Sendable {
     _ = submit(
       Wire.appOpenedEvent, ["from_background": .bool(fromBackground)], personProperties: nil,
       timezone: options.timezone)
+    // Every foreground refreshes the stored answers: a finished experiment ends
+    // its stamp here, and the next session gets a changed answer.
+    if !disabled { assignments.appOpened(preload: options.experiments) }
   }
 
   /// The last scene went to the background: background time is idle time, so
@@ -585,12 +639,15 @@ public final class TogoEngine: @unchecked Sendable {
       ?? touchSession { id in
         sessionStarted(id, occurredMs: event.clientEventMs, userId: eventUserId, ids: ids, app: event.app, device: event.device)
       }
-    return named(
-      RawEvent(
-        eventName: event.eventName, clientEventMs: event.clientEventMs, eventId: event.eventId,
-        anonymousId: ids.anonymousId, deviceId: ids.deviceId, userId: eventUserId,
-        sessionId: sessionId, properties: event.properties,
-        personProperties: event.personProperties, timezone: event.timezone))
+    var raw = RawEvent(
+      eventName: event.eventName, clientEventMs: event.clientEventMs, eventId: event.eventId,
+      anonymousId: ids.anonymousId, deviceId: ids.deviceId, userId: eventUserId,
+      sessionId: sessionId, properties: event.properties,
+      personProperties: event.personProperties, timezone: event.timezone)
+    // Stamped now, so a queued event keeps it. A released event has none: it
+    // was held because nothing could be read or stored yet.
+    if held == nil { raw.experiments = assignments.stamp(for: event.eventName) }
+    return named(raw)
   }
 
   /// The event naming the SDK this engine runs as — a wrapper's, when one set it.
@@ -741,6 +798,7 @@ public final class TogoEngine: @unchecked Sendable {
       identifiedBeforeLoad = false
     }
     sessions.forget()
+    assignments.forgetIdentity()
     // In memory first, whatever consent says: a grant after this must mint a
     // new anonymous id and open a new session, never reuse the last user's.
     record.userId = nil

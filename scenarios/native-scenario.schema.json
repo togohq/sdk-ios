@@ -81,6 +81,16 @@
           "flush": {
             "const": true
           },
+          "getExperiment": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The app asks for this experiment's variant: getExperiment(name), its answer used and discarded."
+          },
+          "cachedExperiment": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The app reads the stored answer for this experiment synchronously: cachedExperiment(name)."
+          },
           "at": {
             "type": "string",
             "pattern": "^\\+(\\d+(ms|s|m|h|d))+$",
@@ -88,16 +98,63 @@
           }
         },
         "oneOf": [
-          { "required": ["launch"] },
-          { "required": ["foreground"] },
-          { "required": ["background"] },
-          { "required": ["track"] },
-          { "required": ["identify"] },
-          { "required": ["setPersonProperties"] },
-          { "required": ["setConsent"] },
-          { "required": ["reset"] },
-          { "required": ["flush"] }
+          {
+            "required": ["launch"]
+          },
+          {
+            "required": ["foreground"]
+          },
+          {
+            "required": ["background"]
+          },
+          {
+            "required": ["track"]
+          },
+          {
+            "required": ["identify"]
+          },
+          {
+            "required": ["setPersonProperties"]
+          },
+          {
+            "required": ["setConsent"]
+          },
+          {
+            "required": ["reset"]
+          },
+          {
+            "required": ["flush"]
+          },
+          {
+            "required": ["getExperiment"]
+          },
+          {
+            "required": ["cachedExperiment"]
+          }
         ]
+      }
+    },
+    "assignments": {
+      "type": "object",
+      "description": "What the assignment service answers this device, per experiment name, in its wire format. The runner answers every getExperiment request from here, at once and never recorded; a name not listed is not_found.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["status", "variant", "participating"],
+        "properties": {
+          "status": {
+            "enum": ["draft", "active", "finished", "not_found"]
+          },
+          "variant": {
+            "type": ["string", "null"]
+          },
+          "participating": {
+            "type": "boolean"
+          },
+          "unit": {
+            "enum": ["anonymous_id", "device_id", "user_id"]
+          }
+        }
       }
     }
   }

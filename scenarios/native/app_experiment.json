@@ -1,0 +1,99 @@
+{
+  "$schema": "../native-scenario.schema.json",
+  "name": "app_experiment",
+  "description": "An app branching on two experiments, recorded like every scenario under a test key, which stores no answer: every process asks again, and enters once per variant. Opened; asks for checkout_redesign (a participant: one $experiment_entered, and the variant stamped on later events, never on a $ event) and dark_mode (not participating: nothing). Killed in the background and launched the next day: the synchronous read finds nothing stored, so nothing is entered or stamped. A logout drops what this process entered; asking again enters again. The stored answer, the once-per-unit record and the offline rules a live key adds are the SDKs' own tests (ExperimentsTests.swift, ExperimentsTest.kt).",
+  "assignments": {
+    "checkout_redesign": {
+      "status": "active",
+      "variant": "new",
+      "participating": true,
+      "unit": "device_id"
+    },
+    "dark_mode": {
+      "status": "active",
+      "variant": null,
+      "participating": false,
+      "unit": "device_id"
+    }
+  },
+  "steps": [
+    {
+      "launch": {
+        "appVersion": "3.0.0",
+        "appBuild": "300"
+      }
+    },
+    {
+      "foreground": "main",
+      "at": "+1s"
+    },
+    {
+      "getExperiment": "checkout_redesign",
+      "at": "+1s"
+    },
+    {
+      "getExperiment": "dark_mode",
+      "at": "+1s"
+    },
+    {
+      "track": "screen_viewed",
+      "properties": {
+        "screen": "checkout"
+      },
+      "at": "+5s"
+    },
+    {
+      "track": "checkout_completed",
+      "at": "+1m"
+    },
+    {
+      "background": "main",
+      "at": "+2m"
+    },
+    {
+      "launch": {
+        "appVersion": "3.0.0",
+        "appBuild": "300"
+      },
+      "at": "+1d"
+    },
+    {
+      "foreground": "main",
+      "at": "+1s"
+    },
+    {
+      "cachedExperiment": "checkout_redesign",
+      "at": "+1s"
+    },
+    {
+      "track": "screen_viewed",
+      "properties": {
+        "screen": "home"
+      },
+      "at": "+5s"
+    },
+    {
+      "reset": true,
+      "at": "+10m"
+    },
+    {
+      "track": "screen_viewed",
+      "properties": {
+        "screen": "login"
+      },
+      "at": "+5s"
+    },
+    {
+      "getExperiment": "checkout_redesign",
+      "at": "+5s"
+    },
+    {
+      "track": "checkout_completed",
+      "at": "+1m"
+    },
+    {
+      "background": "main",
+      "at": "+1m"
+    }
+  ]
+}

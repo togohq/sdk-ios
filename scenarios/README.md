@@ -296,7 +296,12 @@ change to the contract: read the diff, because a lifecycle rule that broke shows
 plausible-looking new golden.
 
 A native scenario has one device and no `server` actor, starts with a `launch`, and names the
-scene for each `foreground` and `background`. The network is held until the end, as for every
+scene for each `foreground` and `background`. Two more verbs are a native SDK's alone:
+`getExperiment` and `cachedExperiment` name an experiment the app asks for, and the scenario's
+top-level `assignments` is what the assignment service answers that device — at once, never
+recorded, `not_found` for a name it does not list. Recorded under a test key, as every scenario is,
+they store no answer: each process asks again and enters once per variant, and what a live key adds
+(the stored answer, offline reads, the once-per-unit record) is the SDKs' own tests. The network is held until the end, as for every
 scenario, so the background flushes fail like an offline phone's and each event is uploaded with
 its real `clientEventTs`; a batch never mixes two app builds. What a native scenario does **not**
 cover is what no runner can fake honestly — a device locked before its first unlock, an IDFV that
